@@ -3,136 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VG Mobile Ops</title>
+    <title>VG Mobile App</title>
     
-    <!-- Mobile Settings -->
     <meta name="theme-color" content="#001f60">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- Libraries -->
+    <!-- CSS & Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    
-    <!-- Script Dependencies -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
+    
     <style>
-        body { background-color: #f0f2f5; font-family: 'Roboto', sans-serif; user-select: none; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; user-select: none; padding-bottom: 80px; }
         
-        /* --- HEADER --- */
-        .app-header {
-            background: #001f60; color: white; padding: 15px 20px;
-            position: sticky; top: 0; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        /* HEADER */
+        .mobile-header {
+            background: #001f60; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         .header-title { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.2rem; }
 
-        /* --- LOGIN --- */
-        #viewLogin { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #001f60, #000); color: white; padding: 30px; position: fixed; top: 0; width: 100%; z-index: 2000; }
-        .login-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 10px; margin-bottom: 15px; text-align: center; }
-        .login-input::placeholder { color: rgba(255,255,255,0.5); }
-        .login-input:focus { background: rgba(255,255,255,0.2); color: white; border-color: white; box-shadow: none; }
-
-        /* --- CARDS --- */
-        .app-card { background: white; border-radius: 15px; padding: 20px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .form-label { font-size: 0.75rem; font-weight: 700; color: #6c757d; text-transform: uppercase; margin-bottom: 5px; }
-        .form-control, .form-select { border-radius: 10px; padding: 12px; font-weight: 500; border: 1px solid #dee2e6; }
-        .form-control:focus { border-color: #001f60; box-shadow: 0 0 0 3px rgba(0,31,96,0.1); }
-
-        /* --- BOTTOM NAVIGATION --- */
+        /* CARDS & INPUTS */
+        .app-card { background: white; border-radius: 12px; padding: 20px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .form-label { font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+        .form-control, .form-select { border-radius: 8px; padding: 12px; font-weight: 600; border: 1px solid #dee2e6; }
+        .form-control:focus { border-color: #001f60; box-shadow: none; }
+        
+        /* NAVIGATION */
         .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white;
-            display: flex; justify-content: space-around; padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000;
-            border-top: 1px solid #eee;
+            position: fixed; bottom: 0; width: 100%; background: white; height: 65px;
+            display: flex; justify-content: space-around; align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid #eee;
         }
-        .nav-item { text-align: center; color: #9ca3af; flex: 1; cursor: pointer; }
-        .nav-item.active { color: #001f60; }
+        .nav-item { text-align: center; color: #9ca3af; flex: 1; cursor: pointer; padding: 5px; }
+        .nav-item.active { color: #001f60; background: #f8f9fa; border-top: 3px solid #001f60; }
         .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
-        .nav-text { font-size: 0.7rem; font-weight: bold; }
+        .nav-text { font-size: 0.65rem; font-weight: 700; }
 
-        /* --- SCANNER --- */
-        #reader { width: 100%; border-radius: 15px; overflow: hidden; background: black; min-height: 300px; margin-bottom: 15px; }
-        
-        /* --- STICKER CANVAS (HIDDEN) --- */
-        /* Design based on Airline Style (A6 Ratio) */
-        #sticker-canvas {
-            position: fixed; top: -9999px; left: 0;
-            width: 384px; /* Standard Print Width for Mobile */
-            background: white; color: black; border: 2px solid black;
-            font-family: 'Oswald', sans-serif; display: flex; flex-direction: column;
+        /* MODAL (PRINT POPUP) */
+        .custom-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);
+            z-index: 2000; display: flex; justify-content: center; align-items: center;
         }
-        .stk-head { background: #eee; border-bottom: 2px solid black; padding: 5px; display: flex; align-items: center; gap: 5px; }
-        .stk-logo { height: 20px; }
-        .stk-dest { background: black; color: white; font-size: 50px; font-weight: 900; text-align: center; line-height: 1; border-bottom: 2px solid black; padding: 5px 0; }
-        .stk-warn { text-align: center; font-size: 20px; font-weight: bold; border-bottom: 2px solid black; padding: 2px; display: none; }
-        .stk-body { padding: 10px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .stk-wb { font-size: 32px; font-weight: 900; border: 3px solid black; padding: 2px 10px; border-radius: 8px; margin-top: 10px; letter-spacing: 2px; }
-        .stk-addr { width: 100%; border-top: 2px solid black; padding: 5px; font-family: Arial, sans-serif; font-size: 12px; }
-        .stk-foot { display: flex; border-top: 2px solid black; }
-        .stk-col { flex: 1; border-right: 2px solid black; text-align: center; padding: 5px; }
-        .stk-col:last-child { border: none; }
-        
+        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
+
+        /* UTILS */
         .hidden { display: none !important; }
-        .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 12px; font-size: 1.1rem; }
+        .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
+
+        /* PRINT STYLES */
+        #printArea { display: none; }
+        @media print {
+            body * { visibility: hidden; } /* Hide everything */
+            #printArea, #printArea * { visibility: visible !important; } /* Show sticker */
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            @page { size: 100mm 150mm; margin: 0; }
+            
+            .sticker-page { 
+                width: 100mm; height: 149mm; margin: 0 auto; 
+                border: 3px solid black; background: white; color: black;
+                font-family: 'Arial', sans-serif; display: flex; flex-direction: column;
+                box-sizing: border-box; padding: 0; overflow: hidden;
+                page-break-after: always;
+            }
+            .wb-header { display: flex; justify-content: space-between; padding: 5px; border-bottom: 2px solid black; background: #eee; -webkit-print-color-adjust: exact; }
+            .wb-logo { height: 18px; } .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 14px; }
+            .wb-dest { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 45px; font-weight: 900; line-height: 1; padding: 2px 0; -webkit-print-color-adjust: exact; }
+            .wb-warn { text-align: center; font-size: 20px; font-weight: bold; border-bottom: 2px solid black; text-transform: uppercase; display: none; }
+            .wb-warn.show { display: block; }
+            .wb-qr-box { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 2px solid black; }
+            .wb-num { font-size: 26px; font-weight: 900; font-family: 'Oswald', sans-serif; }
+            .wb-info { padding: 8px; border-bottom: 1px solid black; font-size: 12px; line-height: 1.3; }
+            .wb-foot { display: flex; border-top: 3px solid black; height: 50px; margin-top: auto; }
+            .wb-cell { flex: 1; border-right: 2px solid black; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+            .wb-cell:last-child { border: none; }
+            .wb-lbl { font-size: 9px; font-weight: bold; }
+            .wb-val { font-size: 18px; font-weight: 900; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1. LOGIN -->
-    <div id="viewLogin">
-        <i class="fas fa-shipping-fast fa-4x mb-3 text-warning"></i>
-        <h3 class="fw-bold mb-4">VG STAFF APP</h3>
-        <input type="email" id="email" class="form-control login-input" placeholder="Email Address">
-        <input type="password" id="pass" class="form-control login-input" placeholder="Password">
-        <button class="btn btn-warning w-100 py-3 fw-bold rounded-4" onclick="login()">SECURE LOGIN</button>
+    <!-- 1. LOGIN SCREEN -->
+    <div id="viewLogin" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #001f60; color: white; padding: 30px; position: fixed; width: 100%; top:0; z-index: 3000;">
+        <i class="fas fa-cubes fa-4x mb-3 text-warning"></i>
+        <h3 class="fw-bold mb-4">VG MOBILE</h3>
+        <input type="email" id="email" class="form-control mb-3 text-center" placeholder="Email Address">
+        <input type="password" id="pass" class="form-control mb-4 text-center" placeholder="Password">
+        <button class="btn btn-warning w-100 py-3 fw-bold rounded-3" onclick="login()">LOGIN</button>
     </div>
 
     <!-- 2. MAIN APP -->
     <div id="viewMain" class="hidden">
         
-        <div class="app-header">
-            <div class="header-title"><i class="fas fa-box me-2 text-warning"></i> VG FREIGHTAGE</div>
-            <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-power-off"></i></button>
+        <!-- HEADER -->
+        <div class="mobile-header">
+            <div class="header-title"><i class="fas fa-shipping-fast text-warning me-2"></i> VG FREIGHTAGE</div>
+            <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- TAB: CREATE -->
-        <div id="tab-create" class="tab-content">
+        <!-- TAB CONTENT: CREATE -->
+        <div id="tab-create" class="tab-pane">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
                 
-                <!-- WAYBILL NO -->
+                <label class="form-label">Waybill Number</label>
                 <div class="input-group mb-3">
-                    <input type="text" id="wbInput" class="form-control fw-bold text-center text-primary fs-4" readonly>
-                    <button class="btn btn-secondary" onclick="generateRandomWB()"><i class="fas fa-sync"></i></button>
+                    <input type="text" id="wbInput" class="form-control fw-bold text-center text-primary fs-5">
+                    <button class="btn btn-secondary" onclick="generateRandomWB()">AUTO</button>
                 </div>
 
-                <!-- ORIGIN / DESTINATION -->
                 <div class="row g-2 mb-2">
                     <div class="col-6">
                         <label class="form-label">Origin</label>
-                        <input type="text" id="shipperAddr" class="form-control fw-bold" placeholder="MNL HUB">
+                        <input type="text" id="shipperAddr" class="form-control" placeholder="MNL HUB">
                     </div>
                     <div class="col-6">
                         <label class="form-label">Destination</label>
-                        <input type="text" id="consigneeAddr" class="form-control fw-bold" placeholder="DVO HUB">
+                        <input type="text" id="consigneeAddr" class="form-control" placeholder="DVO HUB">
                     </div>
                 </div>
 
-                <!-- DETAILS -->
-                <div class="row g-2 mb-2">
+                <div class="row g-2 mb-3">
                     <div class="col-4">
                         <label class="form-label">Qty</label>
                         <input type="number" id="qty" class="form-control text-center" value="1">
                     </div>
                     <div class="col-4">
-                        <label class="form-label">Weight</label>
-                        <input type="text" id="weight" class="form-control text-center" placeholder="kg">
+                        <label class="form-label">Wt (kg)</label>
+                        <input type="text" id="weight" class="form-control text-center" placeholder="0">
                     </div>
                     <div class="col-4">
                         <label class="form-label">Type</label>
@@ -144,95 +145,135 @@
                     </div>
                 </div>
 
-                <!-- HIDDEN REQUIRED FIELDS -->
-                <input type="hidden" id="shipperName" value="Mobile Sender">
-                <input type="hidden" id="shipperContact" value="000">
-                <input type="hidden" id="consigneeName" value="Mobile Receiver">
-                <input type="hidden" id="consigneeContact" value="000">
+                <!-- Hidden Defaults -->
+                <input type="hidden" id="shipperName" value="Mobile User">
+                <input type="hidden" id="consigneeName" value="Mobile User">
+                <input type="hidden" id="shipperContact" value="0">
+                <input type="hidden" id="consigneeContact" value="0">
 
                 <button class="btn btn-success btn-xl mt-2" onclick="createParcel()">
-                    <i class="fas fa-save me-2"></i> SAVE & PRINT
+                    <i class="fas fa-save me-2"></i> SAVE PARCEL
                 </button>
             </div>
         </div>
 
-        <!-- TAB: SCAN -->
-        <div id="tab-scan" class="tab-content hidden">
+        <!-- TAB CONTENT: SCAN -->
+        <div id="tab-scan" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Scan & Update</h5>
-                <div id="reader"></div>
+                <div id="reader" style="background:black; min-height:250px;"></div>
                 
                 <div id="scanForm" class="hidden">
                     <div class="alert alert-info text-center py-2 mb-2">
                         <strong><i class="fas fa-qrcode"></i> <span id="detectedWB">...</span></strong>
                     </div>
 
-                    <label class="form-label">Action / Location</label>
-                    <select id="currentLocSelect" class="form-select mb-2 fw-bold" onchange="toggleCustomLoc()">
+                    <label class="form-label">Status</label>
+                    <select id="newStatus" class="form-select mb-2 fw-bold">
+                        <option value="" disabled selected>Select...</option>
+                        <option>Picked Up</option>
+                        <option>Departed Origin</option>
+                        <option>In Transit</option>
+                        <option>Arrived at Hub</option>
+                        <option>Out for Delivery</option>
+                        <option>Delivered</option>
+                    </select>
+
+                    <label class="form-label">Location</label>
+                    <select id="currentLocSelect" class="form-select mb-2">
                         <option disabled selected>Loading...</option>
                     </select>
-                    <input type="text" id="currentLocCustom" class="form-control mb-2 hidden" placeholder="Type Location">
                     
-                    <button class="btn btn-primary btn-xl mt-2" onclick="updateStatus()">
-                        UPDATE STATUS
-                    </button>
-                    <button class="btn btn-secondary w-100 mt-2 py-2 rounded-3" onclick="resetScan()">Cancel</button>
+                    <button class="btn btn-primary btn-xl mt-2" onclick="updateStatus()">UPDATE STATUS</button>
+                    <button class="btn btn-secondary w-100 mt-2 py-2" onclick="resetScan()">Cancel</button>
                 </div>
             </div>
         </div>
 
-        <!-- NAVIGATION BAR -->
+        <!-- TAB CONTENT: TRACK -->
+        <div id="tab-track" class="tab-pane hidden">
+            <div class="app-card">
+                <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
+                <div class="input-group mb-3">
+                    <input type="text" id="trackInput" class="form-control" placeholder="Waybill #">
+                    <button class="btn btn-primary" onclick="trackItem()"><i class="fas fa-search"></i></button>
+                </div>
+                <div id="trackResult"></div>
+                
+                <!-- Reprint Box -->
+                <div id="reprintBox" class="hidden mt-3 pt-3 border-top">
+                    <label class="form-label">Print Selection</label>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <input type="number" id="rpStart" class="form-control text-center" value="1">
+                        <span>to</span>
+                        <input type="number" id="rpEnd" class="form-control text-center" value="1">
+                    </div>
+                    <button class="btn btn-dark w-100 fw-bold" onclick="reprintRange()">PRINT STICKERS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: ADMIN -->
+        <div id="tab-admin" class="tab-pane hidden">
+            <div class="app-card">
+                <h5 class="fw-bold text-danger">Admin Tools</h5>
+                <button class="btn btn-outline-danger w-100 mb-2" onclick="exportToExcel()">Download CSV Report</button>
+                <div class="alert alert-warning small">Use PC for full admin controls.</div>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAV -->
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchTab('create')">
-                <div class="nav-icon"><i class="fas fa-plus-square"></i></div>
-                <div class="nav-text">CREATE</div>
+                <div class="nav-icon"><i class="fas fa-plus-square"></i></div><div class="nav-text">CREATE</div>
             </div>
             <div class="nav-item" onclick="switchTab('scan')">
-                <div class="nav-icon"><i class="fas fa-qrcode"></i></div>
-                <div class="nav-text">SCAN</div>
+                <div class="nav-icon"><i class="fas fa-qrcode"></i></div><div class="nav-text">SCAN</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('track')">
+                <div class="nav-icon"><i class="fas fa-search"></i></div><div class="nav-text">TRACK</div>
+            </div>
+            <div class="nav-item" onclick="switchTab('admin')">
+                <div class="nav-icon"><i class="fas fa-user-shield"></i></div><div class="nav-text">ADMIN</div>
             </div>
         </div>
 
     </div>
 
-    <!-- HIDDEN STICKER GENERATOR -->
-    <div id="sticker-canvas">
-        <div class="stk-head">
-            <img src="logo.png" class="stk-logo" onerror="this.style.display='none'">
-            <span style="font-size:12px; font-weight:bold;">VG FREIGHTAGE</span>
-        </div>
-        <div class="stk-dest" id="pDest">DOM</div>
-        <div class="stk-warn" id="pWarn">FRAGILE</div>
-        
-        <div class="stk-body">
-            <div id="pQr"></div>
-            <div class="stk-wb" id="pWb">VG-0000</div>
-        </div>
-
-        <div class="stk-addr">
-            <b>FROM:</b> <span id="pOrg">...</span><br>
-            <b>TO:</b> <span id="pTo">...</span>
-        </div>
-
-        <div class="stk-foot">
-            <div class="stk-col">
-                <div class="stk-lbl">PCS</div>
-                <div class="stk-val" id="pQty">1</div>
+    <!-- PRINT MODAL (POPUP) -->
+    <div id="printModal" class="custom-modal hidden">
+        <div class="modal-box">
+            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
+            <h4 class="fw-bold">SAVED!</h4>
+            <p class="mb-3">Waybill: <b id="pmWb">...</b></p>
+            
+            <div class="bg-light p-3 rounded mb-3 border">
+                <label class="form-label d-block text-start">Copies to Print:</label>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="number" id="pmStart" class="form-control text-center fw-bold" value="1">
+                    <span>to</span>
+                    <input type="number" id="pmEnd" class="form-control text-center fw-bold" value="1">
+                </div>
             </div>
-            <div class="stk-col">
-                <div class="stk-lbl">KG</div>
-                <div class="stk-val" id="pWt">1</div>
-            </div>
+
+            <button class="btn btn-dark w-100 py-3 fw-bold" onclick="executePrint()">
+                <i class="fas fa-print me-2"></i> PRINT NOW
+            </button>
+            <button class="btn btn-link text-muted mt-2" onclick="closePrintModal()">Close</button>
         </div>
     </div>
 
-    <!-- FIREBASE & LOGIC -->
+    <!-- PRINT AREA (HIDDEN) -->
+    <div id="printArea"></div>
+
+    <!-- JAVASCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, updateDoc, arrayUnion, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, updateDoc, arrayUnion, onSnapshot, getDoc, collection, query, orderBy, getDocs } 
+        from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-        // CONFIG (VG-CARGO-SYSTEM-3)
+        // *** CONFIG (VG-CARGO-SYSTEM-3) ***
         const firebaseConfig = {
             apiKey: "AIzaSyCrDEUr1O5krXFHEB2hafLXuEumEcoSTxM",
             authDomain: "vg-cargo-system-3.firebaseapp.com",
@@ -245,9 +286,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        
         let html5QrcodeScanner = null;
+        let currentCreatedData = null;
+        let currentTrackedData = null;
 
-        // --- AUTHENTICATION ---
+        // AUTH
         window.login = async () => {
             try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value); } 
             catch(e){ alert(e.message); }
@@ -266,20 +310,26 @@
             }
         });
 
-        // --- TABS LOGIC ---
+        // TAB SWITCHER
         window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+            // Show selected tab
             document.getElementById('tab-'+tab).classList.remove('hidden');
             
+            // Update Navigation UI
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // Highlight current tab (Logic simplified for 2 tabs)
-            if(tab === 'create') document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-            else document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+            // Logic to active correct icon
+            if(tab == 'create') document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if(tab == 'scan') document.querySelectorAll('.nav-item')[1].classList.add('active');
+            if(tab == 'track') document.querySelectorAll('.nav-item')[2].classList.add('active');
+            if(tab == 'admin') document.querySelectorAll('.nav-item')[3].classList.add('active');
 
+            // Handle Camera
             if(tab === 'scan') startCamera(); else stopCamera();
         }
 
-        // --- CREATE WAYBILL ---
+        // CREATE & SAVE
         window.generateRandomWB = () => {
             document.getElementById('wbInput').value = "VG-" + Math.floor(100000 + Math.random() * 900000);
         }
@@ -294,81 +344,112 @@
 
             if(!org || !des) return alert("Fill Origin & Destination");
 
-            const btn = document.querySelector('.btn-success');
-            btn.innerHTML = "SAVING..."; btn.disabled = true;
-
             try {
-                // Save to Database
-                await setDoc(doc(db, "parcels", wb), {
+                const d = {
                     waybill: wb,
                     shipper: { name: "Mobile", addr: org, contact: "" },
                     consignee: { name: "Mobile", addr: des, contact: "" },
                     details: { qty: qty, weight: wt, handling: hdl },
                     currentStatus: "Accepted",
                     createdBy: auth.currentUser.email,
-                    history: [{ status: "Accepted", location: "Origin (Mobile)", time: new Date().toLocaleString() }]
-                });
+                    history: [{ status: "Accepted", location: "Origin", time: new Date().toLocaleString() }]
+                };
+                
+                await setDoc(doc(db, "parcels", wb), d);
+                
+                // Show Print Modal
+                currentCreatedData = d;
+                document.getElementById('pmWb').innerText = wb;
+                document.getElementById('pmEnd').value = qty;
+                document.getElementById('printModal').classList.remove('hidden');
 
-                // Prepare Sticker for Printing
-                prepareSticker(wb, org, des, qty, wt, hdl);
+            } catch(e) { alert(e.message); }
+        }
 
-                // Send to RawBT (Wait for image gen)
-                setTimeout(() => {
-                    html2canvas(document.querySelector("#sticker-canvas")).then(canvas => {
-                        const base64 = canvas.toDataURL("image/png").split(',')[1];
-                        window.location.href = "rawbt:base64," + base64; // DIRECT PRINT
-                    });
+        // PRINTING SYSTEM
+        window.executePrint = () => {
+            const start = parseInt(document.getElementById('pmStart').value);
+            const end = parseInt(document.getElementById('pmEnd').value);
+            generateStickers(currentCreatedData, start, end);
+            setTimeout(() => window.print(), 500);
+        }
+
+        window.closePrintModal = () => {
+            document.getElementById('printModal').classList.add('hidden');
+            // Reset Form
+            document.getElementById('shipperAddr').value = "";
+            document.getElementById('consigneeAddr').value = "";
+            document.getElementById('weight').value = "";
+            generateRandomWB();
+        }
+
+        window.reprintRange = () => {
+            if(!currentTrackedData) return;
+            const start = parseInt(document.getElementById('rpStart').value);
+            const end = parseInt(document.getElementById('rpEnd').value);
+            generateStickers(currentTrackedData, start, end);
+            setTimeout(() => window.print(), 500);
+        }
+
+        function generateStickers(data, start, end) {
+            const area = document.getElementById('printArea');
+            area.innerHTML = "";
+            
+            let dCode = "DOM";
+            const addr = data.consignee.addr.toUpperCase();
+            if(addr.includes("DAVAO")) dCode="DVO";
+            else if(addr.includes("MANILA")) dCode="MNL";
+            else if(addr.includes("CEBU")) dCode="CEB";
+            else if(addr.includes("ILOILO")) dCode="ILO";
+            else if(addr.includes("ROXAS")) dCode="ROX";
+            else if(addr.includes("BACOLOD")) dCode="BCD";
+            else if(addr.includes("GENSAN")) dCode="GES";
+            else if(addr.includes("CAGAYAN")) dCode="CGY";
+
+            const handling = data.details.handling || "Standard";
+            const showWarning = (handling !== "Standard") ? "show" : "";
+
+            for(let i=start; i<=end; i++) {
+                const div = document.createElement('div');
+                div.className = 'sticker-page';
+                div.innerHTML = `
+                    <div class="wb-header">
+                        <img src="logo.png" class="wb-logo" onerror="this.style.display='none'">
+                        <span class="wb-title">VG FREIGHTAGE DOMESTIC</span>
+                    </div>
+                    <div class="wb-dest">${dCode}</div>
+                    <div class="wb-warn ${showWarning}">${handling}</div>
                     
-                    // Reset Form
-                    alert("Saved & Sent to Printer!");
-                    document.getElementById('shipperAddr').value = "";
-                    document.getElementById('consigneeAddr').value = "";
-                    document.getElementById('weight').value = "";
-                    generateRandomWB();
-                    btn.innerHTML = '<i class="fas fa-save me-2"></i> SAVE & PRINT'; btn.disabled = false;
-                }, 500);
+                    <div class="wb-qr-box">
+                        <div id="qr-${i}"></div>
+                        <div class="wb-num">${data.waybill}</div>
+                    </div>
+                    
+                    <div class="wb-info">
+                        <strong>FROM:</strong> ${data.shipper.addr}
+                    </div>
+                    <div class="wb-info">
+                        <strong>TO:</strong> ${data.consignee.addr}
+                    </div>
 
-            } catch(e) { 
-                alert("Error: " + e.message);
-                btn.innerHTML = '<i class="fas fa-save me-2"></i> SAVE & PRINT'; btn.disabled = false;
+                    <div class="wb-foot">
+                        <div class="wb-cell"><span class="wb-lbl">PCS</span><br><b class="wb-val">${i}/${data.details.qty}</b></div>
+                        <div class="wb-cell"><span class="wb-lbl">KG</span><br><b class="wb-val">${data.details.weight}</b></div>
+                    </div>
+                `;
+                area.appendChild(div);
+                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 120, height: 120 });
             }
         }
 
-        function prepareSticker(wb, org, des, qty, wt, hdl) {
-            let code = "DOM";
-            const d = des.toUpperCase();
-            if(d.includes("DAVAO")) code="DVO";
-            else if(d.includes("MANILA") || d.includes("MNL")) code="MNL";
-            else if(d.includes("CEBU")) code="CEB";
-            else if(d.includes("ILOILO")) code="ILO";
-            else if(d.includes("ROXAS")) code="ROX";
-            else if(d.includes("BACOLOD")) code="BCD";
-            else if(d.includes("CAGAYAN")) code="CGY";
-            else if(d.includes("GENSAN")) code="GES";
-            else if(d.includes("BUTUAN")) code="BUT";
-            else if(d.includes("ZAMBOANGA")) code="ZAM";
-
-            document.getElementById('pDest').innerText = code;
-            document.getElementById('pWarn').style.display = (hdl !== 'Standard') ? 'block' : 'none';
-            document.getElementById('pWarn').innerText = hdl;
-            document.getElementById('pWb').innerText = wb;
-            document.getElementById('pOrg').innerText = org;
-            document.getElementById('pTo').innerText = des;
-            document.getElementById('pQty').innerText = qty;
-            document.getElementById('pWt').innerText = wt;
-
-            document.getElementById('pQr').innerHTML = "";
-            new QRCode(document.getElementById('pQr'), { text: wb, width: 120, height: 120 });
-        }
-
-        // --- SCANNER LOGIC ---
-        function stopCamera() { if(html5QrcodeScanner){ html5QrcodeScanner.clear(); html5QrcodeScanner=null; } }
+        // SCANNER
         function startCamera() {
-            stopCamera();
+            if(html5QrcodeScanner) html5QrcodeScanner.clear();
             html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250, aspectRatio: 1.0 });
             html5QrcodeScanner.render(onScanSuccess, ()=>{});
         }
-
+        function stopCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); }
+        
         function onScanSuccess(wb) {
             html5QrcodeScanner.clear();
             document.getElementById('reader').classList.add('hidden');
@@ -379,46 +460,73 @@
         window.resetScan = () => {
             document.getElementById('scanForm').classList.add('hidden');
             document.getElementById('reader').classList.remove('hidden');
-            document.getElementById('currentLocSelect').value = "";
             startCamera();
         }
 
         function loadLocations() {
             onSnapshot(doc(db, "settings", "locations"), s => {
-                let list = ["MNL HUB", "CEB HUB", "DVO HUB", "Rider", "Delivered"];
+                let list = ["MNL HUB", "CEB HUB", "DVO HUB", "Rider"];
                 if(s.exists() && s.data().list) list = s.data().list;
                 list = [...new Set(list)].sort();
                 let opts = list.map(l => `<option value="${l}">${l}</option>`).join('');
-                opts += `<option value="Other">+ New Location</option>`;
-                document.getElementById('currentLocSelect').innerHTML = `<option disabled selected>Select...</option>` + opts;
+                document.getElementById('currentLocSelect').innerHTML = `<option disabled selected>Loading...</option>` + opts;
             });
-        }
-
-        window.toggleCustomLoc = () => {
-            const v = document.getElementById('currentLocSelect').value;
-            if(v==='Other') document.getElementById('currentLocCustom').classList.remove('hidden');
-            else document.getElementById('currentLocCustom').classList.add('hidden');
         }
 
         window.updateStatus = async () => {
             const wb = document.getElementById('detectedWB').innerText;
-            let loc = document.getElementById('currentLocSelect').value;
-            let isCustom = false;
-            if(loc === 'Other') { loc = document.getElementById('currentLocCustom').value.trim(); isCustom = true; }
-            if(!loc) return alert("Select Location");
+            const st = document.getElementById('newStatus').value;
+            const lc = document.getElementById('currentLocSelect').value;
 
-            let s = "Arrived at Hub";
-            if(loc.toUpperCase().includes("RIDER")) s = "Out for Delivery";
-            if(loc.toUpperCase() === "DELIVERED") s = "Delivered";
+            if(!st || !lc) return alert("Select Status & Location");
 
             try {
                 await updateDoc(doc(db, "parcels", wb), {
-                    currentStatus: s,
-                    history: arrayUnion({ status: s, location: loc, time: new Date().toLocaleString(), user: auth.currentUser.email })
+                    currentStatus: st,
+                    history: arrayUnion({ status: st, location: lc, time: new Date().toLocaleString(), user: auth.currentUser.email })
                 });
-                if(isCustom) await setDoc(doc(db, "settings", "locations"), { list: arrayUnion(loc) }, { merge: true });
-                
                 alert("Updated!"); resetScan();
+            } catch(e) { alert(e.message); }
+        }
+
+        // TRACKER
+        window.trackItem = async () => {
+            const wb = document.getElementById('trackInput').value.trim();
+            const res = document.getElementById('trackResult');
+            res.innerHTML = "Searching...";
+            
+            try {
+                const s = await getDoc(doc(db, "parcels", wb));
+                if(s.exists()) {
+                    currentTrackedData = s.data();
+                    res.innerHTML = `
+                        <div class="alert alert-secondary mt-2">
+                            <b>${currentTrackedData.waybill}</b><br>
+                            ${currentTrackedData.currentStatus}
+                        </div>
+                    `;
+                    document.getElementById('reprintBox').classList.remove('hidden');
+                    document.getElementById('rpEnd').value = currentTrackedData.details.qty;
+                } else {
+                    res.innerHTML = "Not Found";
+                    document.getElementById('reprintBox').classList.add('hidden');
+                }
+            } catch(e) { res.innerHTML = "Error"; }
+        }
+
+        window.exportToExcel = async () => {
+            try {
+                const q = query(collection(db, "parcels"), orderBy("waybill", "desc"));
+                const querySnapshot = await getDocs(q);
+                let csv = "Waybill,Status,Origin,Destination\n";
+                querySnapshot.forEach(doc => {
+                    const d = doc.data();
+                    csv += `${d.waybill},${d.currentStatus},${d.shipper.addr},${d.consignee.addr}\n`;
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = url; a.download = "report.csv";
+                document.body.appendChild(a); a.click();
             } catch(e) { alert(e.message); }
         }
     </script>
