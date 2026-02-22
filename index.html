@@ -42,7 +42,22 @@
         .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
         .nav-text { font-size: 0.65rem; font-weight: 700; }
 
-        /* MODAL (PRINT POPUP) */
+        /* HISTORY TIMELINE (RESTORED) */
+        .history-feed { margin-top: 20px; max-height: 300px; overflow-y: auto; }
+        .hist-item { 
+            padding-left: 20px; padding-bottom: 20px; position: relative; border-left: 2px dashed #ddd; 
+            margin-left: 5px;
+        }
+        .hist-item:last-child { border: none; }
+        .hist-item::before {
+            content: ''; position: absolute; left: -5px; top: 0; width: 8px; height: 8px;
+            background: #001f60; border-radius: 50%;
+        }
+        .hist-status { font-weight: bold; font-size: 0.9rem; color: #333; }
+        .hist-loc { font-size: 0.8rem; color: #555; }
+        .hist-time { font-size: 0.7rem; color: #999; margin-top: 2px; }
+
+        /* MODAL */
         .custom-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);
             z-index: 2000; display: flex; justify-content: center; align-items: center;
@@ -53,73 +68,42 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- IDENTICAL PRINT STYLES (MATCHING PC SYSTEM) --- */
+        /* --- PRINT STYLES (A6 - BOXED) --- */
         #printArea { display: none; } 
 
         @media print {
             body * { visibility: hidden; } 
-            
-            #printArea, #printArea * { 
-                visibility: visible !important; 
-            }
-            
-            #printArea { 
-                display: block !important; 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 100%; 
-                margin: 0;
-                padding: 0;
-            }
-            
+            #printArea, #printArea * { visibility: visible !important; }
+            #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
             @page { size: 100mm 150mm; margin: 0; }
             
             .sticker-page { 
                 width: 100mm; height: 149mm; margin: 0 auto; 
-                border: 4px solid black; /* MATCHED PC BORDER */
-                background: white; color: black;
-                font-family: 'Oswald', sans-serif;
-                display: flex; flex-direction: column;
+                border: 4px solid black; background: white; color: black;
+                font-family: 'Arial', sans-serif; display: flex; flex-direction: column;
                 box-sizing: border-box; padding: 0; overflow: hidden;
                 page-break-after: always; break-after: always;
             }
             .sticker-page:last-child { page-break-after: auto; }
 
-            /* Header */
-            .wb-header { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; border-bottom: 2px solid black; background: #eee; -webkit-print-color-adjust: exact; }
-            .wb-brand-box { display: flex; align-items: center; gap: 5px; }
-            .wb-logo { height: 20px; }
-            .wb-company-text { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: bold; color: black; letter-spacing: 0.5px; }
-            .wb-date { font-size: 9px; font-weight: bold; font-family: sans-serif; }
+            .wb-header { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 2px solid black; background: #eee; -webkit-print-color-adjust: exact; }
+            .wb-logo { height: 18px; } .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 14px; }
             
-            /* Destination (Big Black Box) */
-            .wb-sort-zone { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: bold; line-height: 1; padding: 2px 0; letter-spacing: 3px; text-transform: uppercase; border-bottom: 2px solid black; -webkit-print-color-adjust: exact; }
+            .wb-dest { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 45px; font-weight: 900; line-height: 1; padding: 5px 0; -webkit-print-color-adjust: exact; }
             
-            /* Warning */
-            .wb-warning-banner { background: white; color: black; border-bottom: 2px solid black; text-align: center; font-family: 'Oswald', sans-serif; font-weight: 900; font-size: 24px; padding: 5px; text-transform: uppercase; letter-spacing: 2px; display: none; }
-            .wb-warning-banner.show { display: block; background: black !important; color: white !important; -webkit-print-color-adjust: exact; }
+            .wb-warn { text-align: center; font-size: 24px; font-weight: 900; border-bottom: 2px solid black; text-transform: uppercase; display: none; padding: 2px 0; }
+            .wb-warn.show { display: block; }
 
-            /* QR & Waybill */
-            .wb-qr-section { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-bottom: 2px solid black; }
-            .wb-id-box { text-align: left; }
-            .wb-id-label { font-size: 8px; color: #555; font-weight: bold; text-transform: uppercase; font-family: sans-serif; }
-            .wb-id-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; font-family: 'Oswald', sans-serif; }
-            .wb-qr-code { padding: 0; } 
+            .wb-qr-box { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-bottom: 2px solid black; }
+            .wb-num { font-size: 28px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
             
-            /* Details */
-            .wb-sender { padding: 8px; border-bottom: 1px solid black; font-size: 11px; line-height: 1.2; font-family: sans-serif; }
-            .wb-receiver { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; font-family: sans-serif; }
-            .wb-tag { background: black; color: white; font-size: 10px; font-weight: bold; padding: 2px 5px; display: inline-block; width: fit-content; margin-bottom: 5px; -webkit-print-color-adjust: exact; }
-            .wb-rcv-name { font-size: 30px; font-weight: 900; line-height: 1.1; margin-bottom: 5px; text-transform: uppercase; font-family: 'Oswald', sans-serif; }
-            .wb-rcv-addr { font-size: 14px; font-weight: bold; line-height: 1.2; margin-bottom: 3px; }
+            .wb-info { padding: 8px; border-bottom: 1px solid black; font-size: 12px; line-height: 1.3; }
             
-            /* Footer */
-            .wb-footer { display: flex; border-top: 3px solid black; height: 50px; }
-            .wb-f-item { flex: 1; border-right: 2px solid black; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-            .wb-f-item:last-child { border-right: none; }
-            .wb-f-lbl { font-size: 9px; font-weight: bold; text-transform: uppercase; font-family: sans-serif; }
-            .wb-f-val { font-size: 18px; font-weight: 900; font-family: 'Oswald', sans-serif; }
+            .wb-foot { display: flex; border-top: 3px solid black; height: 70px; margin-top: auto; }
+            .wb-cell { flex: 1; border-right: 2px solid black; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5px 0; }
+            .wb-cell:last-child { border: none; }
+            .wb-lbl { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; display: block; }
+            .wb-val { font-size: 24px; font-weight: 900; line-height: 1; display: block; }
         }
     </style>
 </head>
@@ -157,11 +141,11 @@
                 <div class="row g-2 mb-2">
                     <div class="col-6">
                         <label class="form-label">Origin</label>
-                        <input type="text" id="shipperAddr" class="form-control fw-bold" placeholder="MNL HUB">
+                        <input type="text" id="shipperAddr" class="form-control" placeholder="MNL HUB">
                     </div>
                     <div class="col-6">
                         <label class="form-label">Destination</label>
-                        <input type="text" id="consigneeAddr" class="form-control fw-bold" placeholder="DVO HUB">
+                        <input type="text" id="consigneeAddr" class="form-control" placeholder="DVO HUB">
                     </div>
                 </div>
 
@@ -175,8 +159,8 @@
                         <input type="number" id="qty" class="form-control text-center" value="1">
                     </div>
                     <div class="col-4">
-                        <label class="form-label">Wt (kg)</label>
-                        <input type="text" id="weight" class="form-control text-center" placeholder="0">
+                        <label class="form-label">Weight</label>
+                        <input type="text" id="weight" class="form-control text-center" placeholder="kg">
                     </div>
                     <div class="col-4">
                         <label class="form-label">Type</label>
@@ -227,7 +211,7 @@
             </div>
         </div>
 
-        <!-- TAB CONTENT: TRACK -->
+        <!-- TAB CONTENT: TRACK (FIXED: HISTORY IS BACK) -->
         <div id="tab-track" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
@@ -235,11 +219,13 @@
                     <input type="text" id="trackInput" class="form-control" placeholder="Waybill #">
                     <button class="btn btn-primary" onclick="trackItem()"><i class="fas fa-search"></i></button>
                 </div>
+                
+                <!-- Result & History -->
                 <div id="trackResult"></div>
                 
-                <!-- Reprint Box -->
+                <!-- Reprint Box (Hidden until tracked) -->
                 <div id="reprintBox" class="hidden mt-3 pt-3 border-top">
-                    <label class="form-label">Print Selection</label>
+                    <label class="form-label">Reprint Selection</label>
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <input type="number" id="rpStart" class="form-control text-center" value="1">
                         <span>to</span>
@@ -384,7 +370,6 @@
                 
                 await setDoc(doc(db, "parcels", wb), d);
                 
-                // Show Print Modal
                 currentCreatedData = d;
                 document.getElementById('pmWb').innerText = wb;
                 document.getElementById('pmEnd').value = qty;
@@ -398,11 +383,7 @@
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
             generateStickers(currentCreatedData, start, end);
-            
-            // DELAY TO ENSURE RENDERING
-            setTimeout(() => {
-                window.print();
-            }, 800);
+            setTimeout(() => { window.print(); }, 800);
         }
 
         window.closePrintModal = () => {
@@ -421,7 +402,6 @@
             setTimeout(() => window.print(), 800);
         }
 
-        // IDENTICAL PRINT LAYOUT GENERATOR (PC STYLE)
         function generateStickers(data, start, end) {
             const area = document.getElementById('printArea');
             area.innerHTML = "";
@@ -436,8 +416,6 @@
             else if(addr.includes("BACOLOD")) dCode="BCD";
             else if(addr.includes("GENSAN")) dCode="GES";
             else if(addr.includes("CAGAYAN")) dCode="CGY";
-            else if(addr.includes("BUTUAN")) dCode="BUT";
-            else if(addr.includes("ZAMBOANGA")) dCode="ZAM";
 
             const handling = data.details.handling || "Standard";
             const showWarning = (handling !== "Standard") ? "show" : "";
@@ -448,35 +426,28 @@
                 div.innerHTML = `
                     <div class="wb-header">
                         <img src="logo.png" class="wb-logo" onerror="this.style.display='none'">
-                        <span class="wb-company-text">VG FREIGHTAGE DOMESTIC</span>
+                        <span class="wb-title">VG FREIGHTAGE DOMESTIC</span>
                     </div>
                     <span class="wb-date">${new Date().toLocaleDateString()}</span>
+                    <div class="wb-dest">${dCode}</div>
+                    <div class="wb-warn ${showWarning}">${handling}</div>
                     
-                    <div class="wb-sort-zone">${dCode}</div>
-                    <div class="wb-warning-banner ${showWarning}">${handling}</div>
-                    
-                    <div class="wb-qr-section">
-                        <div class="wb-id-box">
-                            <div class="wb-id-label">WAYBILL NUMBER</div>
-                            <div class="wb-id-text">${data.waybill}</div>
-                        </div>
-                        <div id="qr-${i}" class="wb-qr-code"></div>
+                    <div class="wb-qr-box">
+                        <div id="qr-${i}"></div>
+                        <div class="wb-num">${data.waybill}</div>
                     </div>
                     
-                    <div class="wb-sender">
-                        <strong>FROM:</strong><br>
-                        ${data.shipper.addr}
+                    <div class="wb-info">
+                        <strong>FROM:</strong><br>${data.shipper.addr}
                     </div>
-                    
-                    <div class="wb-receiver">
-                        <div class="wb-tag">DESTINATION</div>
-                        <div class="wb-rcv-name">${data.consignee.addr}</div>
+                    <div class="wb-info">
+                        <strong>TO:</strong> ${data.consignee.addr}
                     </div>
 
-                    <div class="wb-footer">
-                        <div class="wb-f-item"><span class="wb-f-lbl">WEIGHT</span><b class="wb-f-val">${data.details.weight}</b></div>
-                        <div class="wb-f-item"><span class="wb-f-lbl">PCS</span><b class="wb-f-val">${i}/${data.details.qty}</b></div>
-                        <div class="wb-f-item" style="font-size:8px;">Sign Here</div>
+                    <div class="wb-foot">
+                        <div class="wb-cell"><span class="wb-lbl">PCS</span><b class="wb-val">${i}/${data.details.qty}</b></div>
+                        <div class="wb-cell"><span class="wb-lbl">KG</span><b class="wb-val">${data.details.weight}</b></div>
+                        <div class="wb-cell" style="font-size:10px;">Sign Here</div>
                     </div>
                 `;
                 area.appendChild(div);
@@ -536,7 +507,7 @@
             } catch(e) { alert(e.message); }
         }
 
-        // TRACKER & REPRINT
+        // TRACKER & REPRINT (RESTORED HISTORY)
         window.trackItem = async () => {
             const wb = document.getElementById('trackInput').value.trim();
             const res = document.getElementById('trackResult');
@@ -546,10 +517,27 @@
                 const s = await getDoc(doc(db, "parcels", wb));
                 if(s.exists()) {
                     currentTrackedData = s.data();
+                    
+                    // Build History HTML
+                    let histHTML = '';
+                    if(currentTrackedData.history && currentTrackedData.history.length > 0) {
+                        currentTrackedData.history.reverse().forEach(h => {
+                            histHTML += `
+                                <div class="hist-item">
+                                    <div class="hist-status">${h.status}</div>
+                                    <div class="hist-loc">${h.location}</div>
+                                    <div class="hist-time">${h.time} - ${h.user.split('@')[0]}</div>
+                                </div>`;
+                        });
+                    }
+
                     res.innerHTML = `
-                        <div class="alert alert-secondary mt-2">
+                        <div class="alert alert-secondary mt-2 mb-0">
                             <b>${currentTrackedData.waybill}</b><br>
                             ${currentTrackedData.currentStatus}
+                        </div>
+                        <div class="history-feed">
+                            ${histHTML || '<p class="text-center text-muted">No history.</p>'}
                         </div>
                     `;
                     document.getElementById('reprintBox').classList.remove('hidden');
