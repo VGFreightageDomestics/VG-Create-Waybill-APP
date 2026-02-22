@@ -53,7 +53,7 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- FIXED PRINT STYLES (A6) --- */
+        /* --- IDENTICAL PRINT STYLES (MATCHING PC SYSTEM) --- */
         #printArea { display: none; } 
 
         @media print {
@@ -77,63 +77,49 @@
             
             .sticker-page { 
                 width: 100mm; height: 149mm; margin: 0 auto; 
-                border: 3px solid black; background: white; color: black;
-                font-family: 'Arial', sans-serif; display: flex; flex-direction: column;
+                border: 4px solid black; /* MATCHED PC BORDER */
+                background: white; color: black;
+                font-family: 'Oswald', sans-serif;
+                display: flex; flex-direction: column;
                 box-sizing: border-box; padding: 0; overflow: hidden;
                 page-break-after: always; break-after: always;
             }
             .sticker-page:last-child { page-break-after: auto; }
 
             /* Header */
-            .wb-header { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 2px solid black; background: #eee; -webkit-print-color-adjust: exact; }
-            .wb-logo { height: 18px; } .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 14px; }
+            .wb-header { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; border-bottom: 2px solid black; background: #eee; -webkit-print-color-adjust: exact; }
+            .wb-brand-box { display: flex; align-items: center; gap: 5px; }
+            .wb-logo { height: 20px; }
+            .wb-company-text { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: bold; color: black; letter-spacing: 0.5px; }
+            .wb-date { font-size: 9px; font-weight: bold; font-family: sans-serif; }
             
-            /* Destination */
-            .wb-dest { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 45px; font-weight: 900; line-height: 1; padding: 5px 0; -webkit-print-color-adjust: exact; }
+            /* Destination (Big Black Box) */
+            .wb-sort-zone { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: bold; line-height: 1; padding: 2px 0; letter-spacing: 3px; text-transform: uppercase; border-bottom: 2px solid black; -webkit-print-color-adjust: exact; }
             
             /* Warning */
-            .wb-warn { text-align: center; font-size: 24px; font-weight: 900; border-bottom: 2px solid black; text-transform: uppercase; display: none; padding: 2px 0; }
-            .wb-warn.show { display: block; }
+            .wb-warning-banner { background: white; color: black; border-bottom: 2px solid black; text-align: center; font-family: 'Oswald', sans-serif; font-weight: 900; font-size: 24px; padding: 5px; text-transform: uppercase; letter-spacing: 2px; display: none; }
+            .wb-warning-banner.show { display: block; background: black !important; color: white !important; -webkit-print-color-adjust: exact; }
 
             /* QR & Waybill */
-            .wb-qr-box { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-bottom: 2px solid black; }
-            .wb-num { font-size: 28px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
+            .wb-qr-section { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-bottom: 2px solid black; }
+            .wb-id-box { text-align: left; }
+            .wb-id-label { font-size: 8px; color: #555; font-weight: bold; text-transform: uppercase; font-family: sans-serif; }
+            .wb-id-text { font-size: 26px; font-weight: 900; letter-spacing: 1px; font-family: 'Oswald', sans-serif; }
+            .wb-qr-code { padding: 0; } 
             
             /* Details */
-            .wb-info { padding: 8px; border-bottom: 1px solid black; font-size: 12px; line-height: 1.3; }
+            .wb-sender { padding: 8px; border-bottom: 1px solid black; font-size: 11px; line-height: 1.2; font-family: sans-serif; }
+            .wb-receiver { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; font-family: sans-serif; }
+            .wb-tag { background: black; color: white; font-size: 10px; font-weight: bold; padding: 2px 5px; display: inline-block; width: fit-content; margin-bottom: 5px; -webkit-print-color-adjust: exact; }
+            .wb-rcv-name { font-size: 30px; font-weight: 900; line-height: 1.1; margin-bottom: 5px; text-transform: uppercase; font-family: 'Oswald', sans-serif; }
+            .wb-rcv-addr { font-size: 14px; font-weight: bold; line-height: 1.2; margin-bottom: 3px; }
             
-            /* --- FOOTER FIX (Space & Alignment) --- */
-            .wb-foot { 
-                display: flex; 
-                border-top: 3px solid black; 
-                height: 70px; /* Tinaasan ko para hindi siksikan */
-                margin-top: auto; 
-            }
-            .wb-cell { 
-                flex: 1; 
-                border-right: 2px solid black; 
-                text-align: center; 
-                display: flex; 
-                flex-direction: column; 
-                justify-content: center; /* Center Vertically */
-                align-items: center;
-                padding: 5px 0;
-            }
-            .wb-cell:last-child { border: none; }
-            
-            .wb-lbl { 
-                font-size: 10px; 
-                font-weight: bold; 
-                text-transform: uppercase; 
-                margin-bottom: 5px; /* Space sa pagitan ng Label at Number */
-                display: block;
-            }
-            .wb-val { 
-                font-size: 24px; 
-                font-weight: 900; 
-                line-height: 1; 
-                display: block;
-            }
+            /* Footer */
+            .wb-footer { display: flex; border-top: 3px solid black; height: 50px; }
+            .wb-f-item { flex: 1; border-right: 2px solid black; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+            .wb-f-item:last-child { border-right: none; }
+            .wb-f-lbl { font-size: 9px; font-weight: bold; text-transform: uppercase; font-family: sans-serif; }
+            .wb-f-val { font-size: 18px; font-weight: 900; font-family: 'Oswald', sans-serif; }
         }
     </style>
 </head>
@@ -189,8 +175,8 @@
                         <input type="number" id="qty" class="form-control text-center" value="1">
                     </div>
                     <div class="col-4">
-                        <label class="form-label">Weight</label>
-                        <input type="text" id="weight" class="form-control text-center" placeholder="kg">
+                        <label class="form-label">Wt (kg)</label>
+                        <input type="text" id="weight" class="form-control text-center" placeholder="0">
                     </div>
                     <div class="col-4">
                         <label class="form-label">Type</label>
@@ -412,7 +398,11 @@
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
             generateStickers(currentCreatedData, start, end);
-            setTimeout(() => window.print(), 800);
+            
+            // DELAY TO ENSURE RENDERING
+            setTimeout(() => {
+                window.print();
+            }, 800);
         }
 
         window.closePrintModal = () => {
@@ -431,6 +421,7 @@
             setTimeout(() => window.print(), 800);
         }
 
+        // IDENTICAL PRINT LAYOUT GENERATOR (PC STYLE)
         function generateStickers(data, start, end) {
             const area = document.getElementById('printArea');
             area.innerHTML = "";
@@ -445,6 +436,8 @@
             else if(addr.includes("BACOLOD")) dCode="BCD";
             else if(addr.includes("GENSAN")) dCode="GES";
             else if(addr.includes("CAGAYAN")) dCode="CGY";
+            else if(addr.includes("BUTUAN")) dCode="BUT";
+            else if(addr.includes("ZAMBOANGA")) dCode="ZAM";
 
             const handling = data.details.handling || "Standard";
             const showWarning = (handling !== "Standard") ? "show" : "";
@@ -455,28 +448,35 @@
                 div.innerHTML = `
                     <div class="wb-header">
                         <img src="logo.png" class="wb-logo" onerror="this.style.display='none'">
-                        <span class="wb-title">VG FREIGHTAGE DOMESTIC</span>
+                        <span class="wb-company-text">VG FREIGHTAGE DOMESTIC</span>
                     </div>
                     <span class="wb-date">${new Date().toLocaleDateString()}</span>
-                    <div class="wb-dest">${dCode}</div>
-                    <div class="wb-warn ${showWarning}">${handling}</div>
                     
-                    <div class="wb-qr-box">
-                        <div id="qr-${i}"></div>
-                        <div class="wb-num">${data.waybill}</div>
+                    <div class="wb-sort-zone">${dCode}</div>
+                    <div class="wb-warning-banner ${showWarning}">${handling}</div>
+                    
+                    <div class="wb-qr-section">
+                        <div class="wb-id-box">
+                            <div class="wb-id-label">WAYBILL NUMBER</div>
+                            <div class="wb-id-text">${data.waybill}</div>
+                        </div>
+                        <div id="qr-${i}" class="wb-qr-code"></div>
                     </div>
                     
-                    <div class="wb-info">
-                        <strong>FROM:</strong> ${data.shipper.addr}
+                    <div class="wb-sender">
+                        <strong>FROM:</strong><br>
+                        ${data.shipper.addr}
                     </div>
-                    <div class="wb-info">
-                        <strong>TO:</strong> ${data.consignee.addr}
+                    
+                    <div class="wb-receiver">
+                        <div class="wb-tag">DESTINATION</div>
+                        <div class="wb-rcv-name">${data.consignee.addr}</div>
                     </div>
 
-                    <div class="wb-foot">
-                        <div class="wb-cell"><span class="wb-lbl">PCS</span><b class="wb-val">${i}/${data.details.qty}</b></div>
-                        <div class="wb-cell"><span class="wb-lbl">KG</span><b class="wb-val">${data.details.weight}</b></div>
-                        <div class="wb-cell" style="font-size:10px;">Sign Here</div>
+                    <div class="wb-footer">
+                        <div class="wb-f-item"><span class="wb-f-lbl">WEIGHT</span><b class="wb-f-val">${data.details.weight}</b></div>
+                        <div class="wb-f-item"><span class="wb-f-lbl">PCS</span><b class="wb-f-val">${i}/${data.details.qty}</b></div>
+                        <div class="wb-f-item" style="font-size:8px;">Sign Here</div>
                     </div>
                 `;
                 area.appendChild(div);
@@ -487,7 +487,7 @@
         // SCANNER
         function startCamera() {
             if(html5QrcodeScanner) html5QrcodeScanner.clear();
-            html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250, aspectRatio: 1.0 });
             html5QrcodeScanner.render(onScanSuccess, ()=>{});
         }
         function stopCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); }
@@ -511,7 +511,6 @@
                 if(s.exists() && s.data().list) list = s.data().list;
                 list = [...new Set(list)].sort();
                 let opts = list.map(l => `<option value="${l}">${l}</option>`).join('');
-                opts += `<option value="Other">+ New Location</option>`;
                 document.getElementById('currentLocSelect').innerHTML = `<option disabled selected>Select...</option>` + opts;
             });
         }
