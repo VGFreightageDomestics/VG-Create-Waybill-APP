@@ -12,8 +12,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- QR Code & Scanner -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+    <!-- BAGO: HTML2CANVAS (Para maging Image ang Waybill) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; user-select: none; padding-bottom: 80px; }
@@ -62,38 +67,37 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- FIXED PRINT STYLES (A6) --- */
-        #printArea { display: none; } 
+        /* --- FIXED PRINT STYLES FOR IMAGE GENERATION --- */
+        #printArea { 
+            position: fixed; top: 0; left: 0; z-index: -1; opacity: 0;
+            width: 384px; /* Standard 58mm/80mm Thermal Width (approx) */
+            background: white;
+        } 
 
-        @media print {
-            body * { visibility: hidden; } 
-            #printArea, #printArea * { visibility: visible !important; }
-            #printArea { display: block !important; position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-            @page { size: 100mm 150mm; margin: 0; }
-            
-            .sticker-page { 
-                width: 100mm; height: 149mm; margin: 0 auto; 
-                border: 3px solid black; background: white; color: black;
-                font-family: 'Arial', sans-serif; display: flex; flex-direction: column;
-                box-sizing: border-box; padding: 0; overflow: hidden;
-                page-break-after: always; break-after: always;
-            }
-            .sticker-page:last-child { page-break-after: auto; }
-
-            .wb-header { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 2px solid black; background: #eee; -webkit-print-color-adjust: exact; }
-            .wb-logo { height: 18px; } .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 14px; }
-            .wb-dest { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 45px; font-weight: 900; line-height: 1; padding: 2px 0; -webkit-print-color-adjust: exact; }
-            .wb-warn { text-align: center; font-size: 20px; font-weight: bold; border-bottom: 2px solid black; text-transform: uppercase; display: none; padding: 2px 0; }
-            .wb-warn.show { display: block; }
-            .wb-qr-box { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; border-bottom: 2px solid black; }
-            .wb-num { font-size: 28px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
-            .wb-info { padding: 8px; border-bottom: 1px solid black; font-size: 12px; line-height: 1.3; }
-            .wb-foot { display: flex; border-top: 3px solid black; height: 70px; margin-top: auto; }
-            .wb-cell { flex: 1; border-right: 2px solid black; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 5px 0; }
-            .wb-cell:last-child { border: none; }
-            .wb-lbl { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; display: block; }
-            .wb-val { font-size: 24px; font-weight: 900; line-height: 1; display: block; }
+        /* Design ng Sticker mismo */
+        .sticker-page { 
+            width: 384px; /* Fixed width para malinaw sa thermal */
+            padding: 10px;
+            background: white; color: black;
+            font-family: 'Arial', sans-serif; 
+            border: 2px solid black;
+            box-sizing: border-box;
+            margin-bottom: 20px;
         }
+
+        .wb-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid black; padding-bottom: 5px; margin-bottom: 5px;}
+        .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 16px; }
+        .wb-dest { background: black; color: white; text-align: center; font-family: 'Oswald', sans-serif; font-size: 50px; font-weight: 900; margin: 5px 0; }
+        .wb-warn { text-align: center; font-size: 24px; font-weight: bold; border: 2px solid black; margin: 5px 0; text-transform: uppercase; display: none; }
+        .wb-warn.show { display: block; }
+        .wb-qr-box { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
+        .wb-num { font-size: 28px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 1px; }
+        .wb-info { margin-bottom: 5px; font-size: 14px; line-height: 1.2; border-bottom: 1px solid #ccc; padding-bottom: 2px;}
+        .wb-foot { display: flex; border-top: 3px solid black; margin-top: 10px; padding-top: 5px; }
+        .wb-cell { flex: 1; text-align: center; border-right: 1px solid black; }
+        .wb-cell:last-child { border: none; }
+        .wb-lbl { font-size: 10px; font-weight: bold; display: block; }
+        .wb-val { font-size: 20px; font-weight: 900; display: block; }
     </style>
 </head>
 <body>
@@ -217,7 +221,7 @@
                         <span>to</span>
                         <input type="number" id="rpEnd" class="form-control text-center" value="1">
                     </div>
-                    <button class="btn btn-dark w-100 btn-sm fw-bold" onclick="reprintRange()">PRINT STICKERS</button>
+                    <button class="btn btn-dark w-100 btn-sm fw-bold" onclick="reprintRange()">PRINT VIA GROZZII</button>
                 </div>
             </div>
         </div>
@@ -266,13 +270,13 @@
             </div>
 
             <button class="btn btn-dark w-100 py-3 fw-bold" onclick="executePrint()">
-                <i class="fas fa-print me-2"></i> PRINT NOW
+                <i class="fas fa-print me-2"></i> PRINT VIA GROZZII
             </button>
             <button class="btn btn-link text-muted mt-2" onclick="closePrintModal()">Close</button>
         </div>
     </div>
 
-    <!-- PRINT AREA (HIDDEN) -->
+    <!-- PRINT AREA (This will be converted to Image) -->
     <div id="printArea"></div>
 
     <!-- JAVASCRIPT -->
@@ -364,12 +368,62 @@
             } catch(e) { alert(e.message); }
         }
 
-        // PRINTING SYSTEM
+        // --- NEW PRINTING SYSTEM (IMAGE GENERATOR FOR GROZZII) ---
         window.executePrint = () => {
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
+            
+            // 1. Generate Elements
             generateStickers(currentCreatedData, start, end);
-            setTimeout(() => { window.print(); }, 800);
+            
+            // 2. Alert User
+            const btnText = document.querySelector("#printModal button");
+            const oldText = btnText.innerText;
+            btnText.innerText = "Preparing Image...";
+            
+            // 3. Convert to Image using HTML2Canvas
+            setTimeout(() => {
+                const elementToPrint = document.querySelector('.sticker-page'); // Get first sticker
+                if(!elementToPrint) return;
+
+                html2canvas(elementToPrint, { 
+                    scale: 2, // Higher quality
+                    backgroundColor: "#ffffff",
+                    useCORS: true
+                }).then(canvas => {
+                    // Check if inside Flutter Bridge (Previously discussed)
+                    if (window.FlutterPrintChannel) {
+                         const base64 = canvas.toDataURL("image/png");
+                         window.FlutterPrintChannel.postMessage(base64);
+                         btnText.innerText = oldText;
+                         return;
+                    }
+
+                    // --- FALLBACK: SHARE INTENT FOR GROZZII APP ---
+                    canvas.toBlob(async (blob) => {
+                        const file = new File([blob], "waybill_" + currentCreatedData.waybill + ".png", { type: "image/png" });
+                        
+                        // Try Native Share (Modern Android)
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            try {
+                                await navigator.share({
+                                    files: [file],
+                                    title: 'Print Waybill',
+                                    text: 'Please select Grozzii App to print.'
+                                });
+                            } catch (err) { console.log(err); }
+                        } else {
+                            // Old Android: Download Image
+                            const link = document.createElement('a');
+                            link.download = "waybill_" + currentCreatedData.waybill + ".png";
+                            link.href = canvas.toDataURL();
+                            link.click();
+                            alert("Image Downloaded! Open it and share to Grozzii App.");
+                        }
+                        btnText.innerText = oldText;
+                    });
+                });
+            }, 500);
         }
 
         window.closePrintModal = () => {
@@ -382,10 +436,14 @@
 
         window.reprintRange = () => {
             if(!currentTrackedData) return;
+            currentCreatedData = currentTrackedData; // Set as current for printing
             const start = parseInt(document.getElementById('rpStart').value);
             const end = parseInt(document.getElementById('rpEnd').value);
-            generateStickers(currentTrackedData, start, end);
-            setTimeout(() => window.print(), 800);
+            
+            // Use same print logic
+            document.getElementById('pmStart').value = start;
+            document.getElementById('pmEnd').value = end;
+            executePrint(); 
         }
 
         function generateStickers(data, start, end) {
@@ -411,10 +469,8 @@
                 div.className = 'sticker-page';
                 div.innerHTML = `
                     <div class="wb-header">
-                        <img src="logo.png" class="wb-logo" onerror="this.style.display='none'">
                         <span class="wb-title">VG FREIGHTAGE DOMESTIC</span>
                     </div>
-                    <span class="wb-date">${new Date().toLocaleDateString()}</span>
                     <div class="wb-dest">${dCode}</div>
                     <div class="wb-warn ${showWarning}">${handling}</div>
                     
@@ -424,7 +480,7 @@
                     </div>
                     
                     <div class="wb-info">
-                        <strong>FROM:</strong><br>${data.shipper.addr}
+                        <strong>FROM:</strong> ${data.shipper.addr}
                     </div>
                     <div class="wb-info">
                         <strong>TO:</strong> ${data.consignee.addr}
@@ -433,11 +489,10 @@
                     <div class="wb-foot">
                         <div class="wb-cell"><span class="wb-lbl">PCS</span><b class="wb-val">${i}/${data.details.qty}</b></div>
                         <div class="wb-cell"><span class="wb-lbl">KG</span><b class="wb-val">${data.details.weight}</b></div>
-                        <div class="wb-cell" style="font-size:10px;">Sign Here</div>
                     </div>
                 `;
                 area.appendChild(div);
-                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 140, height: 140 });
+                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 120, height: 120 });
             }
         }
 
@@ -493,9 +548,8 @@
             } catch(e) { alert(e.message); }
         }
 
-        // TRACKER FIX: Auto Uppercase & History Loop
+        // TRACKER FIX
         window.trackItem = async () => {
-            // FIXED: Added .trim().toUpperCase() so it finds VG-123 even if typed vg-123
             const wb = document.getElementById('trackInput').value.trim().toUpperCase();
             const res = document.getElementById('trackResult');
             res.innerHTML = "Searching...";
@@ -504,13 +558,9 @@
                 const s = await getDoc(doc(db, "parcels", wb));
                 if(s.exists()) {
                     currentTrackedData = s.data();
-                    
-                    // FIXED: Re-added History Loop
                     let histHTML = "";
                     if(currentTrackedData.history && currentTrackedData.history.length > 0) {
-                        // Use spread operator to avoid mutating original array
                         [...currentTrackedData.history].reverse().forEach(h => {
-                            // Safe user access
                             const user = h.user ? h.user.split('@')[0] : 'System';
                             histHTML += `
                             <div class="hist-item">
