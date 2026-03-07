@@ -28,12 +28,11 @@
         }
         .header-title { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.2rem; }
 
-        /* CARDS & INPUTS */
+        /* APP UI STYLES */
         .app-card { background: white; border-radius: 12px; padding: 20px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .form-label { font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 8px; padding: 12px; font-weight: 600; border: 1px solid #dee2e6; }
         
-        /* NAVIGATION */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; background: white; height: 65px;
             display: flex; justify-content: space-around; align-items: center;
@@ -47,62 +46,74 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- PRINT AREA DESIGN (UPDATED FOR A6 / 100mm) --- */
+        /* --- WAYBILL DESIGN (FIXED PIXEL PERFECT) --- */
         #printArea { 
             position: fixed; top: 0; left: 0; z-index: -1; opacity: 0;
-            width: 750px; /* High Resolution Width for A6 */
+            width: 800px; /* 800px is approx 100mm at 203dpi */
             background: white;
         } 
 
         .sticker-page { 
-            width: 750px; /* Mas malapad para high quality */
-            /* aspect ratio approx 2:3 for 100x150mm */
-            padding: 20px;
+            width: 800px;
+            /* Height is dynamic: 1200px (150mm) or 1080px (135mm) */
+            padding: 25px;
             background: white; color: black;
             font-family: 'Arial', sans-serif; 
             border: 4px solid black;
             box-sizing: border-box;
             display: flex; flex-direction: column;
+            justify-content: space-between; /* This prevents stretching! */
         }
 
-        .wb-header { border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 10px; text-align: center; }
-        .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 32px; letter-spacing: 2px; }
-        
-        /* Destination Code (DVO/MNL) */
-        .wb-dest { 
+        /* Top Section */
+        .wb-top { flex: 0 0 auto; text-align: center; border-bottom: 4px solid black; padding-bottom: 10px; }
+        .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 30px; letter-spacing: 2px; margin: 0; }
+
+        /* Destination Box */
+        .wb-dest-box { 
+            flex: 0 0 auto; 
             background: black; color: white; text-align: center; 
-            font-family: 'Oswald', sans-serif; font-size: 120px; /* Pinalaki */
-            font-weight: 900; line-height: 1; margin: 10px 0; 
-            padding: 10px 0;
+            margin: 15px 0; padding: 10px 0;
         }
-        
-        /* Handling (Fragile) */
+        .wb-dest { 
+            font-family: 'Oswald', sans-serif; font-size: 110px; 
+            font-weight: 900; line-height: 1;
+        }
+
+        /* Warning / Handling */
         .wb-warn { 
-            text-align: center; font-size: 50px; font-weight: 900; 
-            border: 5px solid black; margin: 15px 0; padding: 5px;
+            flex: 0 0 auto;
+            text-align: center; font-size: 45px; font-weight: 900; 
+            border: 5px solid black; margin-bottom: 15px; padding: 5px;
             text-transform: uppercase; display: none; background: #ddd;
         }
         .wb-warn.show { display: block; }
-        
-        /* QR and Number */
-        .wb-qr-box { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; border-bottom: 4px solid black; padding-bottom: 20px; }
-        .wb-num { font-size: 55px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; text-align: right; line-height: 1.1; }
-        
-        /* Addresses */
-        .wb-info { margin-bottom: 15px; font-size: 24px; line-height: 1.3; border-bottom: 2px solid #ccc; padding-bottom: 5px;}
-        
+
+        /* QR and Code Section */
+        .wb-mid { 
+            flex: 1 1 auto; /* Allows this to grow/shrink without stretching content */
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 4px solid black; padding-bottom: 15px; margin-bottom: 15px;
+        }
+        .wb-num { font-size: 50px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; width: 60%; line-height: 1.1; word-wrap: break-word; }
+
+        /* Address Info */
+        .wb-addr { flex: 0 0 auto; margin-bottom: 20px; }
+        .wb-row { font-size: 22px; line-height: 1.4; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 5px; }
+        .wb-lbl { font-weight: bold; font-size: 18px; color: #333; }
+
         /* Footer */
-        .wb-foot { display: flex; border-top: 5px solid black; margin-top: auto; padding-top: 15px; }
+        .wb-foot { 
+            flex: 0 0 auto; 
+            display: flex; border-top: 5px solid black; padding-top: 10px; 
+        }
         .wb-cell { flex: 1; text-align: center; border-right: 3px solid black; }
         .wb-cell:last-child { border: none; }
-        .wb-lbl { font-size: 20px; font-weight: bold; display: block; text-transform: uppercase;}
-        .wb-val { font-size: 45px; font-weight: 900; display: block; }
+        .wb-sub { font-size: 18px; font-weight: bold; display: block; text-transform: uppercase;}
+        .wb-main { font-size: 40px; font-weight: 900; display: block; }
 
-        /* Modal Fix */
-        .custom-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85);
-            z-index: 2000; display: flex; justify-content: center; align-items: center;
-        }
+        /* Modal */
+        .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
     </style>
 </head>
@@ -124,7 +135,7 @@
             <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- CREATE TAB -->
+        <!-- CREATE -->
         <div id="tab-create" class="tab-pane">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
@@ -150,7 +161,7 @@
             </div>
         </div>
 
-        <!-- SCAN TAB -->
+        <!-- SCAN -->
         <div id="tab-scan" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Scan & Update</h5>
@@ -167,7 +178,7 @@
             </div>
         </div>
 
-        <!-- TRACK TAB -->
+        <!-- TRACK -->
         <div id="tab-track" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
@@ -197,17 +208,32 @@
         </div>
     </div>
 
-    <!-- PRINT MODAL -->
+    <!-- PRINT MODAL WITH SIZE SELECTOR -->
     <div id="printModal" class="custom-modal hidden">
         <div class="modal-box">
             <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
             <h4 class="fw-bold">SAVED!</h4>
             <p class="mb-3">Waybill: <b id="pmWb">...</b></p>
+            
             <div class="bg-light p-3 rounded mb-3 border">
-                <label class="form-label d-block text-start">Copies to Print:</label>
-                <div class="d-flex align-items-center gap-2"><input type="number" id="pmStart" class="form-control text-center fw-bold" value="1"><span>to</span><input type="number" id="pmEnd" class="form-control text-center fw-bold" value="1"></div>
+                <!-- Size Selector -->
+                <label class="form-label d-block text-start">Paper Size:</label>
+                <select id="paperSize" class="form-select mb-3 fw-bold text-center">
+                    <option value="150">100 x 150 mm (Standard)</option>
+                    <option value="135">100 x 135 mm (Shopee)</option>
+                </select>
+
+                <label class="form-label d-block text-start">Copies:</label>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="number" id="pmStart" class="form-control text-center fw-bold" value="1">
+                    <span>to</span>
+                    <input type="number" id="pmEnd" class="form-control text-center fw-bold" value="1">
+                </div>
             </div>
-            <button class="btn btn-dark w-100 py-3 fw-bold" onclick="executePrint()"><i class="fas fa-print me-2"></i> PRINT PDF</button>
+
+            <button class="btn btn-dark w-100 py-3 fw-bold" onclick="executePrint()">
+                <i class="fas fa-print me-2"></i> PRINT PDF
+            </button>
             <button class="btn btn-link text-muted mt-2" onclick="closePrintModal()">Close</button>
         </div>
     </div>
@@ -251,11 +277,13 @@
             } catch(e) { alert(e.message); }
         }
 
-        // --- FIXED LOGIC FOR DESTINATION & PDF SCALING ---
+        // --- NEW PRINT LOGIC WITH SIZE SELECTION ---
         window.executePrint = () => {
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
-            generateStickers(currentCreatedData, start, end);
+            const size = document.getElementById('paperSize').value; // Get size
+            
+            generateStickers(currentCreatedData, start, end, size);
             
             const btnText = document.querySelector("#printModal button");
             const oldText = btnText.innerText;
@@ -269,11 +297,14 @@
                     const imgData = canvas.toDataURL('image/png');
                     const { jsPDF } = window.jspdf;
                     
-                    // Create A6 PDF (100mm x 150mm)
-                    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [100, 150] });
+                    // Set PDF dimensions based on user selection
+                    // 100mm width is constant, height changes
+                    const pdfHeight = (size === '150') ? 150 : 135;
+                    
+                    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [100, pdfHeight] });
 
-                    // Stretch image to fill the 100mm width (High Quality)
-                    pdf.addImage(imgData, 'PNG', 0, 0, 100, 150);
+                    // IMPORTANT: Stretch image to EXACT dimensions
+                    pdf.addImage(imgData, 'PNG', 0, 0, 100, pdfHeight);
 
                     const pdfBlob = pdf.output('blob');
                     const file = new File([pdfBlob], "waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
@@ -291,11 +322,9 @@
         window.closePrintModal = () => { document.getElementById('printModal').classList.add('hidden'); document.getElementById('shipperAddr').value = ""; document.getElementById('consigneeAddr').value = ""; document.getElementById('weight').value = ""; generateRandomWB(); }
         window.reprintRange = () => { if(!currentTrackedData) return; currentCreatedData = currentTrackedData; executePrint(); }
 
-        function generateStickers(data, start, end) {
+        function generateStickers(data, start, end, size) {
             const area = document.getElementById('printArea'); area.innerHTML = "";
             let dCode = "DOM"; 
-            
-            // --- NEW: Smart Code Logic ---
             const addr = data.consignee.addr.toUpperCase();
             if(addr.includes("DAVAO") || addr.includes("DVO")) dCode="DVO"; 
             else if(addr.includes("MANILA") || addr.includes("MNL")) dCode="MNL"; 
@@ -306,31 +335,40 @@
             else if(addr.includes("GENSAN") || addr.includes("GES")) dCode="GES";
             else if(addr.includes("ROXAS") || addr.includes("ROX")) dCode="ROX";
 
-            // --- NEW: Handling Logic (Fragile) ---
             const handling = data.details.handling || "Standard"; 
             const showWarning = (handling !== "Standard") ? "show" : "";
 
+            // Dynamic Height Logic for HTML Element
+            // 800px width. Ratio 2:3 (150mm) = 1200px height. Ratio 1:1.35 (135mm) = 1080px height.
+            const heightPx = (size === '150') ? '1200px' : '1080px';
+
             for(let i=start; i<=end; i++) {
                 const div = document.createElement('div'); div.className = 'sticker-page';
+                div.style.height = heightPx; // Apply dynamic height
+                
                 div.innerHTML = `
-                    <div class="wb-header"><span class="wb-title">VG FREIGHTAGE</span></div>
-                    <div class="wb-dest">${dCode}</div>
+                    <div class="wb-top"><span class="wb-title">VG FREIGHTAGE</span></div>
+                    <div class="wb-dest-box"><div class="wb-dest">${dCode}</div></div>
                     <div class="wb-warn ${showWarning}">${handling}</div>
-                    <div class="wb-qr-box"><div id="qr-${i}"></div><div class="wb-num">${data.waybill}</div></div>
-                    <div class="wb-info"><strong>FROM:</strong> ${data.shipper.addr}</div>
-                    <div class="wb-info"><strong>TO:</strong> ${data.consignee.addr}</div>
+                    <div class="wb-mid">
+                        <div id="qr-${i}"></div>
+                        <div class="wb-num">${data.waybill}</div>
+                    </div>
+                    <div class="wb-addr">
+                        <div class="wb-row"><span class="wb-lbl">FROM:</span> ${data.shipper.addr}</div>
+                        <div class="wb-row"><span class="wb-lbl">TO:</span> ${data.consignee.addr}</div>
+                    </div>
                     <div class="wb-foot">
-                        <div class="wb-cell"><span class="wb-lbl">PCS</span><b class="wb-val">${i}/${data.details.qty}</b></div>
-                        <div class="wb-cell"><span class="wb-lbl">KG</span><b class="wb-val">${data.details.weight}</b></div>
+                        <div class="wb-cell"><span class="wb-sub">PCS</span><b class="wb-main">${i}/${data.details.qty}</b></div>
+                        <div class="wb-cell"><span class="wb-sub">KG</span><b class="wb-main">${data.details.weight}</b></div>
                     </div>
                 `;
                 area.appendChild(div);
-                // Increased QR size for clarity
-                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 250, height: 250 });
+                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 220, height: 220 });
             }
         }
 
-        // Scanner & Other Funcs
+        // Base Functions
         function startCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }); html5QrcodeScanner.render(onScanSuccess, ()=>{}); }
         function stopCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); }
         function onScanSuccess(wb) { html5QrcodeScanner.clear(); document.getElementById('reader').classList.add('hidden'); document.getElementById('scanForm').classList.remove('hidden'); document.getElementById('detectedWB').innerText = wb; }
