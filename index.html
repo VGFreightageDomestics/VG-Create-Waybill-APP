@@ -21,98 +21,66 @@
     <style>
         body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; user-select: none; padding-bottom: 80px; }
         
-        /* HEADER */
-        .mobile-header {
-            background: #001f60; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+        /* HEADER & NAV */
+        .mobile-header { background: #001f60; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .header-title { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.2rem; }
-
-        /* APP UI STYLES */
-        .app-card { background: white; border-radius: 12px; padding: 20px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .form-label { font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 5px; }
-        .form-control, .form-select { border-radius: 8px; padding: 12px; font-weight: 600; border: 1px solid #dee2e6; }
+        .app-card { background: white; border-radius: 12px; padding: 15px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .form-label { font-size: 0.70rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 3px; }
+        .form-control, .form-select { border-radius: 8px; padding: 10px; font-weight: 600; border: 1px solid #dee2e6; font-size: 0.9rem; }
         
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: white; height: 65px;
-            display: flex; justify-content: space-around; align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid #eee;
-        }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; height: 65px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid #eee; }
         .nav-item { text-align: center; color: #9ca3af; flex: 1; cursor: pointer; padding: 5px; }
         .nav-item.active { color: #001f60; background: #f8f9fa; border-top: 3px solid #001f60; }
         .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
         .nav-text { font-size: 0.65rem; font-weight: 700; }
-
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- WAYBILL DESIGN (FIXED PIXEL PERFECT) --- */
-        #printArea { 
-            position: fixed; top: 0; left: 0; z-index: -1; opacity: 0;
-            width: 800px; /* 800px is approx 100mm at 203dpi */
-            background: white;
-        } 
+        /* --- NEW EXACT WAYBILL DESIGN (FLEXBOX PARA HINDI BUMANAT) --- */
+        #printArea { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0; width: 800px; background: white; } 
 
         .sticker-page { 
             width: 800px;
-            /* Height is dynamic: 1200px (150mm) or 1080px (135mm) */
-            padding: 25px;
+            padding: 20px 30px;
             background: white; color: black;
             font-family: 'Arial', sans-serif; 
             border: 4px solid black;
             box-sizing: border-box;
             display: flex; flex-direction: column;
-            justify-content: space-between; /* This prevents stretching! */
+            /* Ang height ay dynamic sa JS para hindi banat ang text */
         }
 
-        /* Top Section */
-        .wb-top { flex: 0 0 auto; text-align: center; border-bottom: 4px solid black; padding-bottom: 10px; }
-        .wb-title { font-family: 'Oswald', sans-serif; font-weight: bold; font-size: 30px; letter-spacing: 2px; margin: 0; }
+        /* 1. Header */
+        .wb-header { text-align: center; font-size: 32px; text-transform: uppercase; font-weight: bold; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 15px; }
+        
+        /* 2. Destination Box */
+        .wb-dest-box { border: 4px solid black; text-align: center; margin: 0 50px 15px 50px; padding: 5px 0; }
+        .wb-dest { font-size: 140px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
 
-        /* Destination Box */
-        .wb-dest-box { 
-            flex: 0 0 auto; 
-            background: black; color: white; text-align: center; 
-            margin: 15px 0; padding: 10px 0;
-        }
-        .wb-dest { 
-            font-family: 'Oswald', sans-serif; font-size: 110px; 
-            font-weight: 900; line-height: 1;
-        }
+        /* 3. QR & Waybill Num */
+        .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid black; }
+        .wb-num { font-size: 60px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; }
 
-        /* Warning / Handling */
-        .wb-warn { 
-            flex: 0 0 auto;
-            text-align: center; font-size: 45px; font-weight: 900; 
-            border: 5px solid black; margin-bottom: 15px; padding: 5px;
-            text-transform: uppercase; display: none; background: #ddd;
-        }
-        .wb-warn.show { display: block; }
+        /* 4. Address Section */
+        .wb-address-section { flex-grow: 1; font-size: 28px; line-height: 1.4; text-transform: uppercase; margin-bottom: 15px; }
+        .addr-line { margin-bottom: 8px; }
+        .addr-indent { display: block; padding-left: 60px; font-size: 32px; font-weight: bold; }
+        
+        /* 5. Warning Box (Handling) */
+        .wb-handling-box { border: 4px solid black; text-align: center; font-size: 80px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 15px; text-transform: uppercase; }
 
-        /* QR and Code Section */
-        .wb-mid { 
-            flex: 1 1 auto; /* Allows this to grow/shrink without stretching content */
-            display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 4px solid black; padding-bottom: 15px; margin-bottom: 15px;
-        }
-        .wb-num { font-size: 50px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; width: 60%; line-height: 1.1; word-wrap: break-word; }
+        /* 6. Commodity */
+        .wb-commodity-section { font-size: 24px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
+        .comm-val { font-size: 35px; font-weight: 900; padding-left: 40px; display: block; }
 
-        /* Address Info */
-        .wb-addr { flex: 0 0 auto; margin-bottom: 20px; }
-        .wb-row { font-size: 22px; line-height: 1.4; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 5px; }
-        .wb-lbl { font-weight: bold; font-size: 18px; color: #333; }
+        /* 7. Footer Table */
+        .wb-footer-table { display: flex; border: 4px solid black; margin-top: auto; }
+        .wb-col { flex: 1; text-align: center; border-right: 4px solid black; display: flex; flex-direction: column; }
+        .wb-col:last-child { border-right: none; }
+        .col-head { border-bottom: 4px solid black; font-size: 20px; font-weight: bold; padding: 5px; text-transform: uppercase; }
+        .col-body { font-size: 45px; font-weight: 900; padding: 10px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
 
-        /* Footer */
-        .wb-foot { 
-            flex: 0 0 auto; 
-            display: flex; border-top: 5px solid black; padding-top: 10px; 
-        }
-        .wb-cell { flex: 1; text-align: center; border-right: 3px solid black; }
-        .wb-cell:last-child { border: none; }
-        .wb-sub { font-size: 18px; font-weight: bold; display: block; text-transform: uppercase;}
-        .wb-main { font-size: 40px; font-weight: 900; display: block; }
-
-        /* Modal */
+        /* Modals */
         .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
     </style>
@@ -135,25 +103,41 @@
             <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- CREATE -->
+        <!-- CREATE TAB (UPDATED FIELDS) -->
         <div id="tab-create" class="tab-pane">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
+                
                 <label class="form-label">Waybill Number</label>
-                <div class="input-group mb-3">
+                <div class="input-group mb-2">
                     <input type="text" id="wbInput" class="form-control fw-bold text-center text-primary fs-5">
                     <button class="btn btn-secondary" onclick="generateRandomWB()">AUTO</button>
                 </div>
+
                 <div class="row g-2 mb-2">
-                    <div class="col-6"><label class="form-label">Origin</label><input type="text" id="shipperAddr" class="form-control" placeholder="MNL HUB"></div>
-                    <div class="col-6"><label class="form-label">Destination</label><input type="text" id="consigneeAddr" class="form-control" placeholder="DVO HUB"></div>
+                    <div class="col-5"><label class="form-label">Cust. Code</label><input type="text" id="custCode" class="form-control text-center" placeholder="e.g. 001"></div>
+                    <div class="col-7"><label class="form-label">Commodity</label><input type="text" id="commodity" class="form-control text-center" placeholder="e.g. Medicines"></div>
                 </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-7"><label class="form-label">Consignee Name</label><input type="text" id="consigneeName" class="form-control" placeholder="JASAC PHARMA"></div>
+                    <div class="col-5"><label class="form-label">Dest. City/Hub</label><input type="text" id="consigneeAddr" class="form-control" placeholder="CEBU BL"></div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-7"><label class="form-label">Shipper Name</label><input type="text" id="shipperName" class="form-control" placeholder="VGFD-APTS" value="VGFD-APTS"></div>
+                    <div class="col-5"><label class="form-label">Origin Hub</label><input type="text" id="shipperAddr" class="form-control" placeholder="MNL" value="MNL"></div>
+                </div>
+
                 <div class="row g-2 mb-3">
-                    <div class="col-4"><label class="form-label">Qty</label><input type="number" id="qty" class="form-control text-center" value="1"></div>
-                    <div class="col-4"><label class="form-label">Weight</label><input type="text" id="weight" class="form-control text-center" placeholder="kg"></div>
-                    <div class="col-4"><label class="form-label">Type</label>
-                        <select id="handling" class="form-select" style="font-size:0.8rem; padding: 12px 5px;">
-                            <option value="Standard">Std</option><option value="FRAGILE">Fragile</option><option value="PERISHABLE">Perish</option>
+                    <div class="col-3"><label class="form-label">Qty</label><input type="number" id="qty" class="form-control text-center" value="1"></div>
+                    <div class="col-4"><label class="form-label">Wgt (kls)</label><input type="text" id="weight" class="form-control text-center" placeholder="kg"></div>
+                    <div class="col-5"><label class="form-label">Handling</label>
+                        <select id="handling" class="form-select">
+                            <option value="GEN CARGO">Gen Cargo</option>
+                            <option value="FRAGILE">Fragile</option>
+                            <option value="PERISHABLE">Perishable</option>
+                            <option value="MEDICINES">Medicines</option>
                         </select>
                     </div>
                 </div>
@@ -161,7 +145,7 @@
             </div>
         </div>
 
-        <!-- SCAN -->
+        <!-- SCAN TAB -->
         <div id="tab-scan" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Scan & Update</h5>
@@ -178,7 +162,7 @@
             </div>
         </div>
 
-        <!-- TRACK -->
+        <!-- TRACK TAB -->
         <div id="tab-track" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
@@ -196,6 +180,7 @@
             </div>
         </div>
 
+        <!-- ADMIN TAB -->
         <div id="tab-admin" class="tab-pane hidden">
              <div class="app-card"><h5 class="fw-bold text-danger">Admin</h5><button class="btn btn-outline-danger w-100" onclick="exportToExcel()">CSV</button></div>
         </div>
@@ -216,13 +201,11 @@
             <p class="mb-3">Waybill: <b id="pmWb">...</b></p>
             
             <div class="bg-light p-3 rounded mb-3 border">
-                <!-- Size Selector -->
                 <label class="form-label d-block text-start">Paper Size:</label>
                 <select id="paperSize" class="form-select mb-3 fw-bold text-center">
                     <option value="150">100 x 150 mm (Standard)</option>
                     <option value="135">100 x 135 mm (Shopee)</option>
                 </select>
-
                 <label class="form-label d-block text-start">Copies:</label>
                 <div class="d-flex align-items-center gap-2">
                     <input type="number" id="pmStart" class="form-control text-center fw-bold" value="1">
@@ -268,20 +251,32 @@
         window.generateRandomWB = () => { document.getElementById('wbInput').value = "VG-" + Math.floor(100000 + Math.random() * 900000); }
 
         window.createParcel = async () => {
-            const wb = document.getElementById('wbInput').value, org = document.getElementById('shipperAddr').value, des = document.getElementById('consigneeAddr').value;
+            const wb = document.getElementById('wbInput').value;
+            const org = document.getElementById('shipperAddr').value;
+            const des = document.getElementById('consigneeAddr').value;
+            const shpName = document.getElementById('shipperName').value || "VGFD-APTS";
+            const conName = document.getElementById('consigneeName').value || "";
+            const custCode = document.getElementById('custCode').value || "";
+            const commodity = document.getElementById('commodity').value || "GEN CARGO";
+            
             if(!org || !des) return alert("Fill Origin & Destination");
             try {
-                const d = { waybill: wb, shipper: { name: "Mobile", addr: org, contact: "" }, consignee: { name: "Mobile", addr: des, contact: "" }, details: { qty: document.getElementById('qty').value, weight: document.getElementById('weight').value, handling: document.getElementById('handling').value }, currentStatus: "Accepted", createdBy: auth.currentUser.email, history: [{ status: "Accepted", location: "Origin", time: new Date().toLocaleString() }] };
+                const d = { 
+                    waybill: wb, 
+                    shipper: { name: shpName, addr: org, contact: "" }, 
+                    consignee: { name: conName, addr: des, contact: "" }, 
+                    details: { qty: document.getElementById('qty').value, weight: document.getElementById('weight').value, handling: document.getElementById('handling').value, custCode: custCode, commodity: commodity }, 
+                    currentStatus: "Accepted", createdBy: auth.currentUser.email, history:[{ status: "Accepted", location: "Origin", time: new Date().toLocaleString() }] 
+                };
                 await setDoc(doc(db, "parcels", wb), d);
                 currentCreatedData = d; document.getElementById('pmWb').innerText = wb; document.getElementById('pmEnd').value = d.details.qty; document.getElementById('printModal').classList.remove('hidden');
             } catch(e) { alert(e.message); }
         }
 
-        // --- NEW PRINT LOGIC WITH SIZE SELECTION ---
         window.executePrint = () => {
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
-            const size = document.getElementById('paperSize').value; // Get size
+            const size = document.getElementById('paperSize').value;
             
             generateStickers(currentCreatedData, start, end, size);
             
@@ -297,15 +292,10 @@
                     const imgData = canvas.toDataURL('image/png');
                     const { jsPDF } = window.jspdf;
                     
-                    // Set PDF dimensions based on user selection
-                    // 100mm width is constant, height changes
                     const pdfHeight = (size === '150') ? 150 : 135;
-                    
                     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [100, pdfHeight] });
 
-                    // IMPORTANT: Stretch image to EXACT dimensions
                     pdf.addImage(imgData, 'PNG', 0, 0, 100, pdfHeight);
-
                     const pdfBlob = pdf.output('blob');
                     const file = new File([pdfBlob], "waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
 
@@ -319,7 +309,7 @@
             }, 500);
         }
 
-        window.closePrintModal = () => { document.getElementById('printModal').classList.add('hidden'); document.getElementById('shipperAddr').value = ""; document.getElementById('consigneeAddr').value = ""; document.getElementById('weight').value = ""; generateRandomWB(); }
+        window.closePrintModal = () => { document.getElementById('printModal').classList.add('hidden'); document.getElementById('consigneeName').value = ""; document.getElementById('consigneeAddr').value = ""; document.getElementById('weight').value = ""; document.getElementById('custCode').value = ""; document.getElementById('commodity').value = ""; generateRandomWB(); }
         window.reprintRange = () => { if(!currentTrackedData) return; currentCreatedData = currentTrackedData; executePrint(); }
 
         function generateStickers(data, start, end, size) {
@@ -335,36 +325,48 @@
             else if(addr.includes("GENSAN") || addr.includes("GES")) dCode="GES";
             else if(addr.includes("ROXAS") || addr.includes("ROX")) dCode="ROX";
 
-            const handling = data.details.handling || "Standard"; 
-            const showWarning = (handling !== "Standard") ? "show" : "";
+            // Fallbacks for older data records
+            const handling = data.details.handling || "GEN CARGO"; 
+            const commodity = data.details.commodity || "GEN CARGO";
+            const custCodeStr = data.details.custCode ? ` [${data.details.custCode}]` : "";
 
-            // Dynamic Height Logic for HTML Element
-            // 800px width. Ratio 2:3 (150mm) = 1200px height. Ratio 1:1.35 (135mm) = 1080px height.
+            // Aspect ratio set via JS
             const heightPx = (size === '150') ? '1200px' : '1080px';
 
             for(let i=start; i<=end; i++) {
                 const div = document.createElement('div'); div.className = 'sticker-page';
-                div.style.height = heightPx; // Apply dynamic height
+                div.style.height = heightPx; 
                 
                 div.innerHTML = `
-                    <div class="wb-top"><span class="wb-title">VG FREIGHTAGE</span></div>
+                    <div class="wb-header">VG FREIGHTAGE DOMESTIC</div>
                     <div class="wb-dest-box"><div class="wb-dest">${dCode}</div></div>
-                    <div class="wb-warn ${showWarning}">${handling}</div>
-                    <div class="wb-mid">
+                    
+                    <div class="wb-qr-row">
                         <div id="qr-${i}"></div>
                         <div class="wb-num">${data.waybill}</div>
                     </div>
-                    <div class="wb-addr">
-                        <div class="wb-row"><span class="wb-lbl">FROM:</span> ${data.shipper.addr}</div>
-                        <div class="wb-row"><span class="wb-lbl">TO:</span> ${data.consignee.addr}</div>
+                    
+                    <div class="wb-address-section">
+                        <div class="addr-line"><strong>TO:</strong> ${data.consignee.addr}</div>
+                        <div class="addr-line"><strong>CONSIGNEE:</strong> ${data.consignee.name}${custCodeStr}<br><span class="addr-indent">${data.consignee.addr}</span></div>
+                        <div class="addr-line"><strong>SHIPPER:</strong> ${data.shipper.name}<br><span class="addr-indent">${data.shipper.addr}</span></div>
                     </div>
-                    <div class="wb-foot">
-                        <div class="wb-cell"><span class="wb-sub">PCS</span><b class="wb-main">${i}/${data.details.qty}</b></div>
-                        <div class="wb-cell"><span class="wb-sub">KG</span><b class="wb-main">${data.details.weight}</b></div>
+
+                    <div class="wb-handling-box">${handling}</div>
+                    
+                    <div class="wb-commodity-section">
+                        <span>COMMODITY:</span>
+                        <span class="comm-val">${commodity}</span>
+                    </div>
+
+                    <div class="wb-footer-table">
+                        <div class="wb-col"><div class="col-head">QTY</div><div class="col-body">${i}/${data.details.qty}</div></div>
+                        <div class="wb-col"><div class="col-head">WGT (KLS)</div><div class="col-body">${data.details.weight} KLS</div></div>
+                        <div class="wb-col"><div class="col-head">SIGN/DATE</div><div class="col-body"></div></div>
                     </div>
                 `;
                 area.appendChild(div);
-                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 220, height: 220 });
+                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 230, height: 230 });
             }
         }
 
@@ -373,7 +375,7 @@
         function stopCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); }
         function onScanSuccess(wb) { html5QrcodeScanner.clear(); document.getElementById('reader').classList.add('hidden'); document.getElementById('scanForm').classList.remove('hidden'); document.getElementById('detectedWB').innerText = wb; }
         window.resetScan = () => { document.getElementById('scanForm').classList.add('hidden'); document.getElementById('reader').classList.remove('hidden'); startCamera(); }
-        function loadLocations() { onSnapshot(doc(db, "settings", "locations"), s => { let list = ["MNL HUB", "CEB HUB", "DVO HUB", "Rider", "Delivered"]; if(s.exists() && s.data().list) list = s.data().list; list = [...new Set(list)].sort(); document.getElementById('currentLocSelect').innerHTML = `<option disabled selected>Select...</option>` + list.map(l => `<option value="${l}">${l}</option>`).join(''); }); }
+        function loadLocations() { onSnapshot(doc(db, "settings", "locations"), s => { let list =["MNL HUB", "CEB HUB", "DVO HUB", "Rider", "Delivered"]; if(s.exists() && s.data().list) list = s.data().list; list =[...new Set(list)].sort(); document.getElementById('currentLocSelect').innerHTML = `<option disabled selected>Select...</option>` + list.map(l => `<option value="${l}">${l}</option>`).join(''); }); }
         window.updateStatus = async () => { const wb = document.getElementById('detectedWB').innerText, st = document.getElementById('newStatus').value, lc = document.getElementById('currentLocSelect').value; if(!st || !lc) return alert("Select Status"); await updateDoc(doc(db, "parcels", wb), { currentStatus: st, history: arrayUnion({ status: st, location: lc, time: new Date().toLocaleString(), user: auth.currentUser.email }) }); alert("Updated!"); resetScan(); }
         window.trackItem = async () => { const wb = document.getElementById('trackInput').value.trim().toUpperCase(); const res = document.getElementById('trackResult'); res.innerHTML = "Searching..."; try { const s = await getDoc(doc(db, "parcels", wb)); if(s.exists()) { currentTrackedData = s.data(); res.innerHTML = `<div class="alert alert-secondary mt-2 mb-2"><b>${currentTrackedData.waybill}</b><br>${currentTrackedData.currentStatus}</div>`; document.getElementById('reprintBox').classList.remove('hidden'); document.getElementById('rpEnd').value = currentTrackedData.details.qty; } else { res.innerHTML = '<div class="alert alert-danger">Not found</div>'; } } catch(e) { res.innerHTML = e.message; } }
         window.exportToExcel = async () => { /* ... */ }
