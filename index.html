@@ -19,7 +19,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; user-select: none; padding-bottom: 80px; }
+        /* Tinanggal ang user-select: none para iwas Chrome Keyboard Bug */
+        body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; padding-bottom: 80px; }
         
         /* HEADER & NAV */
         .mobile-header { background: #001f60; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -37,7 +38,7 @@
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
         /* --- EXACT WAYBILL DESIGN PARA SA TP870PLUS (HIGH RESOLUTION) --- */
-        #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -1; } 
+        #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -100; opacity: 0; } 
 
         .sticker-page { 
             width: 800px;
@@ -101,28 +102,28 @@
                 
                 <label class="form-label">Waybill Number</label>
                 <div class="input-group mb-2">
-                    <input type="text" id="wbInput" class="form-control fw-bold text-center text-primary fs-5">
+                    <input type="text" id="wbInput" class="form-control fw-bold text-center text-primary fs-5" autocomplete="off">
                     <button class="btn btn-secondary" onclick="generateRandomWB()">AUTO</button>
                 </div>
 
                 <div class="row g-2 mb-2">
-                    <div class="col-5"><label class="form-label">Cust. Code</label><input type="text" id="custCode" class="form-control text-center" placeholder="e.g. 001"></div>
-                    <div class="col-7"><label class="form-label">Commodity</label><input type="text" id="commodity" class="form-control text-center" placeholder="e.g. Medicines"></div>
+                    <div class="col-5"><label class="form-label">Cust. Code</label><input type="text" id="custCode" class="form-control text-center" placeholder="e.g. 001" autocomplete="off"></div>
+                    <div class="col-7"><label class="form-label">Commodity</label><input type="text" id="commodity" class="form-control text-center" placeholder="e.g. Medicines" autocomplete="off"></div>
                 </div>
 
                 <div class="row g-2 mb-2">
-                    <div class="col-7"><label class="form-label">Consignee Name</label><input type="text" id="consigneeName" class="form-control" placeholder="JASAC PHARMA"></div>
-                    <div class="col-5"><label class="form-label">Dest. City/Hub</label><input type="text" id="consigneeAddr" class="form-control" placeholder="ILOILO"></div>
+                    <div class="col-7"><label class="form-label">Consignee Name</label><input type="text" id="consigneeName" class="form-control" placeholder="JASAC PHARMA" autocomplete="off"></div>
+                    <div class="col-5"><label class="form-label">Dest. City/Hub</label><input type="text" id="consigneeAddr" class="form-control" placeholder="ILOILO" autocomplete="off"></div>
                 </div>
 
                 <div class="row g-2 mb-2">
-                    <div class="col-7"><label class="form-label">Shipper Name</label><input type="text" id="shipperName" class="form-control" placeholder="VGFD-APTS" value="VGFD-APTS"></div>
-                    <div class="col-5"><label class="form-label">Origin Hub</label><input type="text" id="shipperAddr" class="form-control" placeholder="MNL" value="MNL"></div>
+                    <div class="col-7"><label class="form-label">Shipper Name</label><input type="text" id="shipperName" class="form-control" placeholder="VGFD-APTS" value="VGFD-APTS" autocomplete="off"></div>
+                    <div class="col-5"><label class="form-label">Origin Hub</label><input type="text" id="shipperAddr" class="form-control" placeholder="MNL" value="MNL" autocomplete="off"></div>
                 </div>
 
                 <div class="row g-2 mb-3">
-                    <div class="col-3"><label class="form-label">Qty</label><input type="number" id="qty" class="form-control text-center" value="1"></div>
-                    <div class="col-4"><label class="form-label">Wgt (kls)</label><input type="text" id="weight" class="form-control text-center" placeholder="kg"></div>
+                    <div class="col-3"><label class="form-label">Qty</label><input type="number" id="qty" class="form-control text-center" value="1" autocomplete="off"></div>
+                    <div class="col-4"><label class="form-label">Wgt (kls)</label><input type="text" id="weight" class="form-control text-center" placeholder="kg" autocomplete="off"></div>
                     <div class="col-5"><label class="form-label">Handling</label>
                         <select id="handling" class="form-select">
                             <option value="GEN CARGO">Gen Cargo</option>
@@ -158,7 +159,7 @@
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
                 <div class="input-group mb-3">
-                    <input type="text" id="trackInput" class="form-control" placeholder="Waybill #">
+                    <input type="text" id="trackInput" class="form-control" placeholder="Waybill #" autocomplete="off">
                     <button class="btn btn-primary" onclick="trackItem()"><i class="fas fa-search"></i></button>
                 </div>
                 <div id="trackResult"></div>
@@ -184,7 +185,7 @@
         </div>
     </div>
 
-    <!-- PRINT MODAL WITH SIZE SELECTOR & FIXED SHARE BUTTON -->
+    <!-- PRINT MODAL WITH FIXED SHARE LOGIC -->
     <div id="printModal" class="custom-modal hidden">
         <div class="modal-box">
             <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
@@ -267,15 +268,15 @@
             } catch(e) { alert(e.message); }
         }
 
-        // --- FIXED 2-STEP SHARE LOGIC ---
+        // --- FIXED 2-STEP SHARE LOGIC (NO BACKGROUND DOWNLOAD) ---
         window.executePrint = async () => {
             const btn = document.getElementById("mainPrintBtn");
             const btnSpan = btn.querySelector("span");
 
-            // STEP 2: KUNG GENERATED NA ANG FILE, SHARE NA
+            // STEP 2: SHARE IF ALREADY GENERATED
             if (readyToShareFile) {
                 try {
-                    if (navigator.canShare && navigator.canShare({ files: [readyToShareFile] })) {
+                    if (navigator.canShare && navigator.canShare({ files:[readyToShareFile] })) {
                         await navigator.share({ 
                             files: [readyToShareFile], 
                             title: 'VG Freightage Waybill',
@@ -294,7 +295,7 @@
                 return;
             }
 
-            // STEP 1: GENERATION PROCESS
+            // STEP 1: GENERATE PDF
             btn.disabled = true;
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
@@ -324,7 +325,7 @@
                 const pdfBlob = pdf.output('blob');
                 readyToShareFile = new File([pdfBlob], "VG_Waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
 
-                // SUCCESS: Change button UI (Walang auto-download na magaganap dito)
+                // Change UI safely
                 btn.classList.remove('btn-dark');
                 btn.classList.add('btn-primary');
                 btn.innerHTML = `<i class="fas fa-share-alt me-2"></i> <span>TAP TO SHARE TO GROZZII</span>`;
