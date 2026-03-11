@@ -35,6 +35,7 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
+        /* --- EXACT WAYBILL DESIGN --- */
         #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -100; opacity: 0; } 
 
         .sticker-page { 
@@ -87,7 +88,6 @@
             <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- CREATE TAB -->
         <div id="tab-create" class="tab-pane">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
@@ -129,7 +129,6 @@
             </div>
         </div>
 
-        <!-- SCAN TAB -->
         <div id="tab-scan" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Scan & Update</h5>
@@ -146,7 +145,6 @@
             </div>
         </div>
 
-        <!-- TRACK TAB -->
         <div id="tab-track" class="tab-pane hidden">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
@@ -164,7 +162,6 @@
             </div>
         </div>
 
-        <!-- ADMIN TAB -->
         <div id="tab-admin" class="tab-pane hidden">
              <div class="app-card"><h5 class="fw-bold text-danger">Admin</h5><button class="btn btn-outline-danger w-100" onclick="exportToExcel()">CSV</button></div>
         </div>
@@ -307,13 +304,9 @@
 
                 const pdfBlob = pdf.output('blob');
                 
-                // IMPORTANT FIX: Added lastModified parameter para maiwasan ang Permission Denied sa Chrome Android
-                readyToShareFile = new File([pdfBlob], "VG_Waybill_" + currentCreatedData.waybill + ".pdf", { 
-                    type: "application/pdf",
-                    lastModified: new Date().getTime()
-                });
+                // PINAKASIMPLENG FILE FORMAT PARA SA CHROME ANDROID
+                readyToShareFile = new File([pdfBlob], "VG_Waybill.pdf", { type: "application/pdf" });
 
-                // SHOW NEXT BUTTONS
                 document.getElementById('generateContainer').classList.add('hidden');
                 document.getElementById('shareContainer').classList.remove('hidden');
 
@@ -324,36 +317,24 @@
             }
         }
 
-        // --- STEP 2: SHARE ONLY WITH FALLBACK ---
+        // --- STEP 2: SHARE (CLEANEST POSSIBLE WAY) ---
         window.sharePDF = async () => {
             if (!readyToShareFile) return;
             
-            const shareBtn = document.getElementById("shareBtn");
-            const originalHTML = shareBtn.innerHTML;
-            shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> OPENING SHARE...';
-
             try {
-                // FIX: Tinanggal ang 'text' at 'title' para iwas conflict. Pure File lang ibabato natin.
+                // Tanging yung FILE lang ipapasa natin para iwas "Permission Denied"
                 const shareData = {
+                    title: 'VG Waybill',
                     files: [readyToShareFile]
                 };
 
-                if (navigator.canShare && navigator.canShare(shareData)) {
-                    await navigator.share(shareData);
-                } else {
-                    // Pilitin pumunta sa catch block
-                    throw new Error("Browser does not support sharing files.");
-                }
+                await navigator.share(shareData);
+
             } catch (err) {
+                // Kapag naharang pa rin ng Android, ipapaalam agad sa user.
                 if (err.name !== "AbortError") {
-                    // SMART FALLBACK: Kapag nag "Permission Denied", auto-download nalang agad para walang abala.
-                    console.log("Share failed via API. Auto-triggering download. Error:", err);
-                    window.downloadPDF();
-                    
-                    alert("Awtomatikong nai-download ang PDF dahil nakaharang ang Share Security ng browser mo. \n\nHanapin ito sa 'Downloads' o sa iyong notifications at i-open sa Grozzii.");
+                    alert("⚠️ HINARANG NG BROWSER ⚠️\n\nHindi pinapayagan ng phone/browser mo ang direktang pag-share ng bagong PDF dahil sa security settings.\n\nAno ang gagawin?\n1. Pindutin ang 'DOWNLOAD PDF' button sa ibaba.\n2. Buksan ang na-download na file mula sa notifications at i-print gamit ang Grozzii.");
                 }
-            } finally {
-                shareBtn.innerHTML = originalHTML;
             }
         }
 
@@ -362,10 +343,11 @@
             if (!readyToShareFile) return;
             const link = document.createElement('a');
             link.href = URL.createObjectURL(readyToShareFile);
-            link.download = readyToShareFile.name;
+            link.download = "VG_Waybill_" + currentCreatedData.waybill + ".pdf";
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            alert("✅ Na-download na ang PDF. Paki-check ang iyong Notifications o Downloads folder.");
         }
 
         window.resetPrintUI = () => {
