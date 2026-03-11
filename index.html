@@ -1,287 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VG Mobile App</title>
-    
-    <meta name="theme-color" content="#001f60">
-    
-    <!-- CSS & Libraries -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <style>
-        body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; user-select: none; padding-bottom: 80px; }
-        
-        .mobile-header { background: #001f60; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .header-title { font-family: 'Oswald', sans-serif; letter-spacing: 1px; font-size: 1.2rem; }
-        .app-card { background: white; border-radius: 12px; padding: 15px; margin: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .form-label { font-size: 0.70rem; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 3px; }
-        .form-control, .form-select { border-radius: 8px; padding: 10px; font-weight: 600; border: 1px solid #dee2e6; font-size: 0.9rem; }
-        
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; height: 65px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid #eee; }
-        .nav-item { text-align: center; color: #9ca3af; flex: 1; cursor: pointer; padding: 5px; }
-        .nav-item.active { color: #001f60; background: #f8f9fa; border-top: 3px solid #001f60; }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
-        .nav-text { font-size: 0.65rem; font-weight: 700; }
-        .hidden { display: none !important; }
-        .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
-
-        /* --- BULLETPROOF WAYBILL DESIGN (HINDI NA MAPUPUTOL) --- */
-        #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -1; } 
-
-        .sticker-page { 
-            width: 800px;
-            /* Inalis ang display:flex; para normal na bumaba ang content */
-            display: block;
-            padding: 10px 25px 25px 25px;
-            background: white; color: black;
-            font-family: 'Arial', sans-serif; 
-            border: 4px solid black;
-            box-sizing: border-box;
-        }
-
-        .wb-header { text-align: center; font-size: 38px; text-transform: uppercase; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 15px; }
-        .wb-dest-box { border: 5px solid black; text-align: center; margin: 0 40px 15px 40px; padding: 5px 0; }
-        .wb-dest { font-size: 150px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
-
-        .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 4px solid black; }
-        .wb-num { font-size: 65px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; }
-
-        .wb-address-section { font-size: 30px; line-height: 1.4; text-transform: uppercase; margin-bottom: 20px; color: black; }
-        .addr-line { margin-bottom: 10px; font-weight: 700; }
-        .addr-indent { display: block; padding-left: 60px; font-size: 36px; font-weight: 900; }
-        
-        .wb-handling-box { border: 5px solid black; text-align: center; font-size: 85px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 20px; text-transform: uppercase; }
-
-        .wb-commodity-section { font-size: 26px; font-weight: bold; text-transform: uppercase; margin-bottom: 20px; border-bottom: 2px solid #aaa; padding-bottom: 10px;}
-        .comm-val { font-size: 40px; font-weight: 900; padding-left: 40px; display: block; }
-
-        /* FOOTER: Fixed na ito at palaging lilitaw */
-        .wb-footer-table { display: flex; border: 5px solid black; }
-        .wb-col { flex: 1; text-align: center; border-right: 5px solid black; display: flex; flex-direction: column; }
-        .wb-col:last-child { border-right: none; }
-        .col-head { border-bottom: 5px solid black; font-size: 22px; font-weight: 900; padding: 5px; text-transform: uppercase; }
-        .col-body { font-size: 55px; font-weight: 900; padding: 15px 5px; display: flex; align-items: center; justify-content: center; }
-
-        .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
-    </style>
-</head>
-<body>
-
-    <div id="viewLogin" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #001f60; color: white; padding: 30px; position: fixed; width: 100%; top:0; z-index: 3000;">
-        <i class="fas fa-cubes fa-4x mb-3 text-warning"></i>
-        <h3 class="fw-bold mb-4">VG MOBILE</h3>
-        <input type="email" id="email" class="form-control mb-3 text-center" placeholder="Email Address">
-        <input type="password" id="pass" class="form-control mb-4 text-center" placeholder="Password">
-        <button class="btn btn-warning w-100 py-3 fw-bold rounded-3" onclick="login()">LOGIN</button>
-    </div>
-
-    <div id="viewMain" class="hidden">
-        <div class="mobile-header">
-            <div class="header-title"><i class="fas fa-shipping-fast text-warning me-2"></i> VG FREIGHTAGE</div>
-            <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-
-        <div id="tab-create" class="tab-pane">
-            <div class="app-card">
-                <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
-                
-                <label class="form-label">Waybill Number</label>
-                <div class="input-group mb-2">
-                    <input type="text" id="wbInput" class="form-control fw-bold text-center text-primary fs-5">
-                    <button class="btn btn-secondary" onclick="generateRandomWB()">AUTO</button>
-                </div>
-
-                <div class="row g-2 mb-2">
-                    <div class="col-5"><label class="form-label">Cust. Code</label><input type="text" id="custCode" class="form-control text-center" placeholder="e.g. 001"></div>
-                    <div class="col-7"><label class="form-label">Commodity</label><input type="text" id="commodity" class="form-control text-center" placeholder="e.g. Medicines"></div>
-                </div>
-
-                <div class="row g-2 mb-2">
-                    <div class="col-7"><label class="form-label">Consignee Name</label><input type="text" id="consigneeName" class="form-control" placeholder="JASAC PHARMA"></div>
-                    <div class="col-5"><label class="form-label">Dest. City/Hub</label><input type="text" id="consigneeAddr" class="form-control" placeholder="ILOILO"></div>
-                </div>
-
-                <div class="row g-2 mb-2">
-                    <div class="col-7"><label class="form-label">Shipper Name</label><input type="text" id="shipperName" class="form-control" placeholder="VGFD-APTS" value="VGFD-APTS"></div>
-                    <div class="col-5"><label class="form-label">Origin Hub</label><input type="text" id="shipperAddr" class="form-control" placeholder="MNL" value="MNL"></div>
-                </div>
-
-                <div class="row g-2 mb-3">
-                    <div class="col-3"><label class="form-label">Qty</label><input type="number" id="qty" class="form-control text-center" value="1"></div>
-                    <div class="col-4"><label class="form-label">Wgt (kls)</label><input type="text" id="weight" class="form-control text-center" placeholder="kg"></div>
-                    <div class="col-5"><label class="form-label">Handling</label>
-                        <select id="handling" class="form-select">
-                            <option value="GEN CARGO">Gen Cargo</option>
-                            <option value="FRAGILE">Fragile</option>
-                            <option value="PERISHABLE">Perishable</option>
-                            <option value="MEDICINES">Medicines</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="btn btn-success btn-xl mt-2" onclick="createParcel()"><i class="fas fa-save me-2"></i> SAVE PARCEL</button>
-            </div>
-        </div>
-
-        <div id="tab-scan" class="tab-pane hidden">
-            <!-- (Scan Code remains same) -->
-            <div class="app-card">
-                <h5 class="fw-bold text-primary mb-3">Scan & Update</h5>
-                <div id="reader" style="background:black; min-height:250px;"></div>
-                <div id="scanForm" class="hidden">
-                    <div class="alert alert-info text-center py-2 mb-2"><strong><i class="fas fa-qrcode"></i> <span id="detectedWB">...</span></strong></div>
-                    <label class="form-label">Status</label>
-                    <select id="newStatus" class="form-select mb-2 fw-bold"><option value="" disabled selected>Select...</option><option>Picked Up</option><option>Departed Origin</option><option>In Transit</option><option>Arrived at Hub</option><option>Out for Delivery</option><option>Delivered</option></select>
-                    <label class="form-label">Location</label>
-                    <select id="currentLocSelect" class="form-select mb-2"><option disabled selected>Loading...</option></select>
-                    <button class="btn btn-primary btn-xl mt-2" onclick="updateStatus()">UPDATE STATUS</button>
-                    <button class="btn btn-secondary w-100 mt-2 btn-sm" onclick="resetScan()">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-track" class="tab-pane hidden">
-            <!-- (Track Code remains same) -->
-            <div class="app-card">
-                <h5 class="fw-bold text-primary mb-3">Track / Reprint</h5>
-                <div class="input-group mb-3">
-                    <input type="text" id="trackInput" class="form-control" placeholder="Waybill #">
-                    <button class="btn btn-primary" onclick="trackItem()"><i class="fas fa-search"></i></button>
-                </div>
-                <div id="trackResult"></div>
-                <div id="reprintBox" class="hidden mt-3 pt-3 border-top">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <input type="number" id="rpStart" class="form-control text-center" value="1"><span>to</span><input type="number" id="rpEnd" class="form-control text-center" value="1">
-                    </div>
-                    <button class="btn btn-dark w-100 btn-sm fw-bold" onclick="reprintRange()">OPEN PRINT MENU</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-admin" class="tab-pane hidden">
-             <div class="app-card"><h5 class="fw-bold text-danger">Admin</h5><button class="btn btn-outline-danger w-100" onclick="exportToExcel()">CSV</button></div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('create')"><div class="nav-icon"><i class="fas fa-plus-square"></i></div><div class="nav-text">CREATE</div></div>
-            <div class="nav-item" onclick="switchTab('scan')"><div class="nav-icon"><i class="fas fa-qrcode"></i></div><div class="nav-text">SCAN</div></div>
-            <div class="nav-item" onclick="switchTab('track')"><div class="nav-icon"><i class="fas fa-search"></i></div><div class="nav-text">TRACK</div></div>
-            <div class="nav-item" onclick="switchTab('admin')"><div class="nav-icon"><i class="fas fa-user-shield"></i></div><div class="nav-text">ADMIN</div></div>
-        </div>
-    </div>
-
-    <!-- PRINT MODAL (MODIFIED FOR 2-STEP ANTI-ERROR SHARE) -->
-    <div id="printModal" class="custom-modal hidden">
-        <div class="modal-box">
-            <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
-            <h4 class="fw-bold">SAVED!</h4>
-            <p class="mb-3">Waybill: <b id="pmWb">...</b></p>
-            
-            <div class="bg-light p-3 rounded mb-3 border">
-                <label class="form-label d-block text-start">Paper Size:</label>
-                <!-- Added onchange event to reset button when inputs change -->
-                <select id="paperSize" class="form-select mb-3 fw-bold text-center" onchange="resetPrintButton()">
-                    <option value="150">100 x 150 mm (Standard)</option>
-                    <option value="135">100 x 135 mm (Shopee)</option>
-                </select>
-                <label class="form-label d-block text-start">Copies (From/To):</label>
-                <div class="d-flex align-items-center gap-2">
-                    <input type="number" id="pmStart" class="form-control text-center fw-bold" value="1" onchange="resetPrintButton()">
-                    <span>to</span>
-                    <input type="number" id="pmEnd" class="form-control text-center fw-bold" value="1" onchange="resetPrintButton()">
-                </div>
-            </div>
-
-            <!-- BUTTON ID ADDED -->
-            <button id="mainPrintBtn" class="btn btn-dark w-100 py-3 fw-bold mb-2" onclick="executePrint()">
-                <i class="fas fa-file-pdf me-2"></i> <span>GENERATE PDF</span>
-            </button>
-            <button class="btn btn-link text-muted" onclick="closePrintModal()">Close</button>
-        </div>
-    </div>
-
-    <div id="printArea"></div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, updateDoc, arrayUnion, onSnapshot, getDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-
-        const firebaseConfig = { apiKey: "AIzaSyCrDEUr1O5krXFHEB2hafLXuEumEcoSTxM", authDomain: "vg-cargo-system-3.firebaseapp.com", projectId: "vg-cargo-system-3", storageBucket: "vg-cargo-system-3.firebasestorage.app", messagingSenderId: "819520192535", appId: "1:819520192535:web:8e42b272500f9b60e19c52" };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        
-        let html5QrcodeScanner = null, currentCreatedData = null, currentTrackedData = null;
-        let readyToShareFile = null; // Global variable to hold generated PDF
-
-        window.login = async () => { try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('pass').value); } catch(e){ alert(e.message); } }
-        window.logout = () => signOut(auth);
-        
-        onAuthStateChanged(auth, user => {
-            if(user) { document.getElementById('viewLogin').classList.add('hidden'); document.getElementById('viewMain').classList.remove('hidden'); generateRandomWB(); loadLocations(); } 
-            else { document.getElementById('viewLogin').classList.remove('hidden'); document.getElementById('viewMain').classList.add('hidden'); }
-        });
-
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden')); document.getElementById('tab-'+tab).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); event.currentTarget.classList.add('active');
-            if(tab === 'scan') startCamera(); else stopCamera();
-        }
-
-        window.generateRandomWB = () => { document.getElementById('wbInput').value = "VG-" + Math.floor(100000 + Math.random() * 900000); }
-
-        window.createParcel = async () => {
-            const wb = document.getElementById('wbInput').value;
-            const org = document.getElementById('shipperAddr').value;
-            const des = document.getElementById('consigneeAddr').value;
-            const shpName = document.getElementById('shipperName').value || "VGFD-APTS";
-            const conName = document.getElementById('consigneeName').value || "";
-            const custCode = document.getElementById('custCode').value || "";
-            const commodity = document.getElementById('commodity').value || "GEN CARGO";
-            
-            if(!org || !des) return alert("Fill Origin & Destination");
-            try {
-                const d = { 
-                    waybill: wb, 
-                    shipper: { name: shpName, addr: org, contact: "" }, 
-                    consignee: { name: conName, addr: des, contact: "" }, 
-                    details: { qty: document.getElementById('qty').value, weight: document.getElementById('weight').value, handling: document.getElementById('handling').value, custCode: custCode, commodity: commodity }, 
-                    currentStatus: "Accepted", createdBy: auth.currentUser.email, history:[{ status: "Accepted", location: "Origin", time: new Date().toLocaleString() }] 
-                };
-                await setDoc(doc(db, "parcels", wb), d);
-                currentCreatedData = d; document.getElementById('pmWb').innerText = wb; document.getElementById('pmEnd').value = d.details.qty; document.getElementById('printModal').classList.remove('hidden');
-                resetPrintButton();
-            } catch(e) { alert(e.message); }
-        }
-
-        // --- NEW 2-STEP ASYNC PRINT LOGIC (ANTI-ERROR) ---
+// --- FIXED 2-STEP SHARE LOGIC ---
         window.executePrint = async () => {
             const btn = document.getElementById("mainPrintBtn");
             const btnSpan = btn.querySelector("span");
 
-            // STEP 2: KUNG GENERATED NA ANG FILE, SHARE NA AGAD
+            // STEP 2: KUNG GENERATED NA ANG FILE, SHARE NA
             if (readyToShareFile) {
-                 if (navigator.canShare && navigator.canShare({ files: [readyToShareFile] })) {
-                    // Ito ay mangyayari INSTANTLY after click kaya hindi maba-block ng browser
-                    navigator.share({ files: [readyToShareFile], title: 'Print Waybill' }).catch(console.error);
-                 } else {
-                     const link = document.createElement('a');
-                     link.href = URL.createObjectURL(readyToShareFile);
-                     link.download = readyToShareFile.name;
-                     link.click();
-                 }
-                 return;
+                try {
+                    // Check kung kaya ng phone mo mag-share ng PDF
+                    if (navigator.canShare && navigator.canShare({ files: [readyToShareFile] })) {
+                        await navigator.share({ 
+                            files: [readyToShareFile], 
+                            title: 'VG Freightage Waybill',
+                            text: 'Waybill Ready'
+                        });
+                    } else {
+                        // Kung sobrang higpit ng browser mo at bawal ang Share
+                        alert("Hindi supported ng browser mo ang Direct Share. Dinadownload ang PDF, buksan ito at i-share sa Grozzii manually.");
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(readyToShareFile);
+                        link.download = readyToShareFile.name;
+                        link.click();
+                    }
+                } catch (err) {
+                    console.log("Share cancelled by user.");
+                }
+                return; // Stop here para hindi umulit ang generation
             }
 
             // STEP 1: GENERATION PROCESS
@@ -290,7 +33,7 @@
             const end = parseInt(document.getElementById('pmEnd').value);
             const size = document.getElementById('paperSize').value;
 
-            generateStickers(currentCreatedData, start, end);
+            generateStickers(currentCreatedData, start, end, size);
 
             try {
                 const pages = document.querySelectorAll('.sticker-page');
@@ -302,112 +45,29 @@
 
                 for (let i = 0; i < pages.length; i++) {
                     btnSpan.innerText = `Processing Page ${i + 1}/${pages.length}...`;
-                    await new Promise(r => setTimeout(r, 50)); // Allow UI to update
+                    
+                    // Binigyan natin ng konting delay (100ms) para makahinga ang browser
+                    await new Promise(r => setTimeout(r, 100)); 
 
-                    const canvas = await html2canvas(pages[i], { scale: 3, backgroundColor: "#ffffff" });
+                    const canvas = await html2canvas(pages[i], { scale: 3, backgroundColor: "#ffffff", useCORS: true });
                     const imgData = canvas.toDataURL('image/png', 1.0);
 
                     if (i > 0) pdf.addPage();
-                    // Ito yung nagfoforce na magkasya siya sa papel (walang putol)
                     pdf.addImage(imgData, 'PNG', 0, 0, 100, pdfHeight);
                 }
 
                 const pdfBlob = pdf.output('blob');
-                readyToShareFile = new File([pdfBlob], "waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
+                readyToShareFile = new File([pdfBlob], "VG_Waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
 
-                // SUCCESS: Change button UI
+                // SUCCESS: Change button UI (Walang auto-download na magaganap dito)
                 btn.classList.remove('btn-dark');
                 btn.classList.add('btn-primary');
                 btn.innerHTML = `<i class="fas fa-share-alt me-2"></i> <span>TAP TO SHARE TO GROZZII</span>`;
                 btn.disabled = false;
-                
-                // Automatic download rin in background para backup
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(readyToShareFile);
-                link.download = readyToShareFile.name;
-                link.click();
 
             } catch (err) {
                 console.error(err);
-                alert("Error: " + err);
+                alert("Generation Error: " + err);
                 resetPrintButton();
             }
         }
-
-        // Reset the button if user changes inputs or closes modal
-        window.resetPrintButton = () => {
-            readyToShareFile = null;
-            const btn = document.getElementById("mainPrintBtn");
-            btn.classList.add('btn-dark');
-            btn.classList.remove('btn-primary');
-            btn.innerHTML = `<i class="fas fa-file-pdf me-2"></i> <span>GENERATE PDF</span>`;
-            btn.disabled = false;
-        }
-
-        window.closePrintModal = () => { document.getElementById('printModal').classList.add('hidden'); document.getElementById('consigneeName').value = ""; document.getElementById('consigneeAddr').value = ""; document.getElementById('weight').value = ""; document.getElementById('custCode').value = ""; document.getElementById('commodity').value = ""; generateRandomWB(); resetPrintButton(); }
-        window.reprintRange = () => { if(!currentTrackedData) return; currentCreatedData = currentTrackedData; document.getElementById('pmStart').value = document.getElementById('rpStart').value; document.getElementById('pmEnd').value = document.getElementById('rpEnd').value; document.getElementById('printModal').classList.remove('hidden'); resetPrintButton(); }
-
-        function generateStickers(data, start, end) {
-            const area = document.getElementById('printArea'); area.innerHTML = "";
-            let dCode = "DOM"; 
-            const addr = data.consignee.addr.toUpperCase();
-            if(addr.includes("DAVAO") || addr.includes("DVO")) dCode="DVO"; 
-            else if(addr.includes("MANILA") || addr.includes("MNL")) dCode="MNL"; 
-            else if(addr.includes("CEBU") || addr.includes("CEB")) dCode="CEB";
-            else if(addr.includes("ILOILO") || addr.includes("ILO")) dCode="ILO";
-            else if(addr.includes("BACOLOD") || addr.includes("BCD")) dCode="BCD";
-            else if(addr.includes("CAGAYAN") || addr.includes("CGY")) dCode="CGY";
-            else if(addr.includes("GENSAN") || addr.includes("GES")) dCode="GES";
-            else if(addr.includes("ROXAS") || addr.includes("ROX")) dCode="ROX";
-
-            const handling = data.details.handling || "GEN CARGO"; 
-            const commodity = data.details.commodity || "GEN CARGO";
-            const custCodeStr = data.details.custCode ? ` [${data.details.custCode}]` : "";
-
-            for(let i=start; i<=end; i++) {
-                const div = document.createElement('div'); div.className = 'sticker-page';
-                div.innerHTML = `
-                    <div class="wb-header">VG FREIGHTAGE DOMESTIC</div>
-                    <div class="wb-dest-box"><div class="wb-dest">${dCode}</div></div>
-                    
-                    <div class="wb-qr-row">
-                        <div id="qr-${i}"></div>
-                        <div class="wb-num">${data.waybill}</div>
-                    </div>
-                    
-                    <div class="wb-address-section">
-                        <div class="addr-line"><strong>TO:</strong> ${data.consignee.addr}</div>
-                        <div class="addr-line"><strong>CONSIGNEE:</strong> ${data.consignee.name}${custCodeStr}<br><span class="addr-indent">${data.consignee.addr}</span></div>
-                        <div class="addr-line"><strong>SHIPPER:</strong> ${data.shipper.name}<br><span class="addr-indent">${data.shipper.addr}</span></div>
-                    </div>
-
-                    <div class="wb-handling-box">${handling}</div>
-                    
-                    <div class="wb-commodity-section">
-                        <span>COMMODITY:</span>
-                        <span class="comm-val">${commodity}</span>
-                    </div>
-
-                    <div class="wb-footer-table">
-                        <div class="wb-col"><div class="col-head">QTY</div><div class="col-body">${i}/${data.details.qty}</div></div>
-                        <div class="wb-col"><div class="col-head">WGT (KLS)</div><div class="col-body">${data.details.weight} KLS</div></div>
-                        <div class="wb-col"><div class="col-head">SIGN/DATE</div><div class="col-body"></div></div>
-                    </div>
-                `;
-                area.appendChild(div);
-                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 230, height: 230 });
-            }
-        }
-
-        // Base Functions
-        function startCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }); html5QrcodeScanner.render(onScanSuccess, ()=>{}); }
-        function stopCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); }
-        function onScanSuccess(wb) { html5QrcodeScanner.clear(); document.getElementById('reader').classList.add('hidden'); document.getElementById('scanForm').classList.remove('hidden'); document.getElementById('detectedWB').innerText = wb; }
-        window.resetScan = () => { document.getElementById('scanForm').classList.add('hidden'); document.getElementById('reader').classList.remove('hidden'); startCamera(); }
-        function loadLocations() { onSnapshot(doc(db, "settings", "locations"), s => { let list =["MNL HUB", "CEB HUB", "DVO HUB", "Rider", "Delivered"]; if(s.exists() && s.data().list) list = s.data().list; list =[...new Set(list)].sort(); document.getElementById('currentLocSelect').innerHTML = `<option disabled selected>Select...</option>` + list.map(l => `<option value="${l}">${l}</option>`).join(''); }); }
-        window.updateStatus = async () => { const wb = document.getElementById('detectedWB').innerText, st = document.getElementById('newStatus').value, lc = document.getElementById('currentLocSelect').value; if(!st || !lc) return alert("Select Status"); await updateDoc(doc(db, "parcels", wb), { currentStatus: st, history: arrayUnion({ status: st, location: lc, time: new Date().toLocaleString(), user: auth.currentUser.email }) }); alert("Updated!"); resetScan(); }
-        window.trackItem = async () => { const wb = document.getElementById('trackInput').value.trim().toUpperCase(); const res = document.getElementById('trackResult'); res.innerHTML = "Searching..."; try { const s = await getDoc(doc(db, "parcels", wb)); if(s.exists()) { currentTrackedData = s.data(); res.innerHTML = `<div class="alert alert-secondary mt-2 mb-2"><b>${currentTrackedData.waybill}</b><br>${currentTrackedData.currentStatus}</div>`; document.getElementById('reprintBox').classList.remove('hidden'); document.getElementById('rpEnd').value = currentTrackedData.details.qty; } else { res.innerHTML = '<div class="alert alert-danger">Not found</div>'; } } catch(e) { res.innerHTML = e.message; } }
-        window.exportToExcel = async () => { /* ... */ }
-    </script>
-</body>
-</html>
