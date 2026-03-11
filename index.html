@@ -35,43 +35,43 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- EXACT WAYBILL DESIGN (SAFE MARGINS INCORPORATED) --- */
-        #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -100; opacity: 0; } 
+        /* --- EXACT PERFECT WAYBILL DESIGN (ANTI CUT-OFF) --- */
+        #printArea { position: absolute; top: -9999px; left: -9999px; width: 800px; background: white; z-index: -100; } 
 
         .sticker-page { 
             width: 800px;
-            /* Padding para hindi sumagad sa absolute edge ng image */
-            padding: 15px 20px;
+            /* Padding sa loob para may breathing room ang design */
+            padding: 20px 25px; 
             background: white; color: black;
             font-family: 'Arial', sans-serif; 
             border: 4px solid black;
             box-sizing: border-box;
             display: flex; flex-direction: column;
-            justify-content: space-between;
+            overflow: hidden; /* Pipigilan ang pag-apaw */
         }
 
-        .wb-header { text-align: center; font-size: 38px; text-transform: uppercase; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 15px; }
-        .wb-dest-box { border: 5px solid black; text-align: center; margin: 0 20px 15px 20px; padding: 5px 0; }
-        .wb-dest { font-size: 160px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
-
-        .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 4px solid black; }
-        .wb-num { font-size: 70px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; line-height: 1; }
-
-        .wb-address-section { flex-grow: 1; font-size: 28px; line-height: 1.3; text-transform: uppercase; margin-bottom: 15px; color: black; }
-        .addr-line { margin-bottom: 8px; font-weight: 700; }
-        .addr-indent { display: block; padding-left: 60px; font-size: 34px; font-weight: 900; }
+        /* Inayos ang font sizes para sakto lahat sa papel */
+        .wb-header { text-align: center; font-size: 34px; text-transform: uppercase; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 4px solid black; padding-bottom: 8px; margin-bottom: 12px; }
+        .wb-dest-box { border: 5px solid black; text-align: center; margin: 0 30px 12px 30px; padding: 5px 0; }
+        .wb-dest { font-size: 135px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
         
-        .wb-handling-box { border: 5px solid black; text-align: center; font-size: 80px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 15px; text-transform: uppercase; }
+        .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 4px solid black; }
+        .wb-num { font-size: 60px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; line-height: 1; }
 
-        .wb-commodity-section { font-size: 26px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid #aaa; padding-bottom: 10px;}
-        .comm-val { font-size: 38px; font-weight: 900; padding-left: 40px; display: block; }
+        .wb-address-section { flex-grow: 1; font-size: 26px; line-height: 1.3; text-transform: uppercase; margin-bottom: 12px; color: black; }
+        .addr-line { margin-bottom: 6px; font-weight: 700; }
+        .addr-indent { display: block; padding-left: 40px; font-size: 32px; font-weight: 900; }
+        
+        .wb-handling-box { border: 5px solid black; text-align: center; font-size: 70px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 12px; text-transform: uppercase; }
 
-        /* FOOTER MARGIN FIX - Inayos para hindi maputol */
-        .wb-footer-table { display: flex; border: 5px solid black; margin-top: auto; margin-bottom: 10px; }
+        .wb-commodity-section { font-size: 24px; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; border-bottom: 2px solid #aaa; padding-bottom: 8px;}
+        .comm-val { font-size: 34px; font-weight: 900; padding-left: 40px; display: block; }
+
+        .wb-footer-table { display: flex; border: 5px solid black; margin-top: auto; }
         .wb-col { flex: 1; text-align: center; border-right: 5px solid black; display: flex; flex-direction: column; }
         .wb-col:last-child { border-right: none; }
-        .col-head { border-bottom: 5px solid black; font-size: 22px; font-weight: 900; padding: 5px; text-transform: uppercase; }
-        .col-body { font-size: 55px; font-weight: 900; padding: 15px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+        .col-head { border-bottom: 5px solid black; font-size: 20px; font-weight: 900; padding: 5px; text-transform: uppercase; }
+        .col-body { font-size: 50px; font-weight: 900; padding: 10px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
 
         .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
@@ -95,6 +95,7 @@
             <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
+        <!-- CREATE TAB -->
         <div id="tab-create" class="tab-pane">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
@@ -278,7 +279,7 @@
             } catch(e) { alert(e.message); }
         }
 
-        // --- STEP 1: COMPRESSED PDF GENERATION (Mabilis at Maliit na File) ---
+        // --- STEP 1: GENERATE ---
         window.generatePDF = async () => {
             const btn = document.getElementById("mainPrintBtn");
             const btnSpan = document.getElementById("genText");
@@ -302,14 +303,12 @@
                     btnSpan.innerText = `Processing Page ${i + 1}/${pages.length}...`;
                     await new Promise(r => setTimeout(r, 100)); 
 
-                    // FIX: Scale 2 na lang at 'image/jpeg' format para sobrang liit ng file size (Dahilan kung bakit ayaw gumana ng share)
                     const canvas = await html2canvas(pages[i], { scale: 2, backgroundColor: "#ffffff", useCORS: true });
                     const imgData = canvas.toDataURL('image/jpeg', 0.8);
 
                     if (i > 0) pdf.addPage();
                     
-                    // FIX CUT-OFF: Naglagay ng 2mm margin sa loob ng PDF para hindi putulin ng hardware ng printer ang ilalim at gilid.
-                    // X=2, Y=2, Width=96, Height=pdfHeight-4
+                    // FIXED: 96mm lapad at pdfHeight-4 para hindi putol ang ilalim
                     pdf.addImage(imgData, 'JPEG', 2, 2, 96, pdfHeight - 4);
                 }
 
@@ -325,11 +324,10 @@
             }
         }
 
-        // --- STEP 2: SHARE TO GROZZII (NATIVE SHARE) ---
+        // --- STEP 2: SHARE ---
         window.sharePDF = async () => {
             if (!readyPdfBlob) return;
             
-            // Gagawa ng sariwang file (fresh file trick)
             const freshFile = new File([readyPdfBlob], "VG_" + currentCreatedData.waybill + ".pdf", { 
                 type: "application/pdf",
                 lastModified: Date.now() 
@@ -393,7 +391,8 @@
             const commodity = data.details.commodity || "GEN CARGO";
             const custCodeStr = data.details.custCode ? `[${data.details.custCode}]` : "";
 
-            const heightPx = (size === '150') ? '1180px' : '1060px'; // Bawasan ng konti ang taas para iwas putol.
+            // In-adjust para saktong-sakto at hindi mabanat pababa.
+            const heightPx = (size === '150') ? '1150px' : '1040px'; 
 
             for(let i=start; i<=end; i++) {
                 const div = document.createElement('div'); div.className = 'sticker-page';
@@ -428,7 +427,7 @@
                     </div>
                 `;
                 area.appendChild(div);
-                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 230, height: 230 });
+                new QRCode(document.getElementById(`qr-${i}`), { text: data.waybill, width: 200, height: 200 }); // QR resized to prevent breaking margins
             }
         }
 
