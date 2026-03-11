@@ -19,7 +19,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        /* user-select removed para walang chrome keyboard bug */
         body { background-color: #f0f2f5; font-family: 'Montserrat', sans-serif; padding-bottom: 80px; }
         
         .mobile-header { background: #001f60; color: white; padding: 15px; position: sticky; top: 0; z-index: 1000; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -36,7 +35,6 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- EXACT WAYBILL DESIGN PARA SA TP870PLUS (HIGH RESOLUTION) --- */
         #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -100; opacity: 0; } 
 
         .sticker-page { 
@@ -53,14 +51,19 @@
         .wb-header { text-align: center; font-size: 38px; text-transform: uppercase; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 15px; }
         .wb-dest-box { border: 5px solid black; text-align: center; margin: 0 40px 15px 40px; padding: 5px 0; }
         .wb-dest { font-size: 150px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
+
         .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 4px solid black; }
         .wb-num { font-size: 65px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; }
+
         .wb-address-section { flex-grow: 1; font-size: 30px; line-height: 1.4; text-transform: uppercase; margin-bottom: 15px; color: black; }
         .addr-line { margin-bottom: 10px; font-weight: 700; }
         .addr-indent { display: block; padding-left: 60px; font-size: 36px; font-weight: 900; }
+        
         .wb-handling-box { border: 5px solid black; text-align: center; font-size: 85px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 15px; text-transform: uppercase; }
+
         .wb-commodity-section { font-size: 26px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid #aaa; padding-bottom: 10px;}
         .comm-val { font-size: 40px; font-weight: 900; padding-left: 40px; display: block; }
+
         .wb-footer-table { display: flex; border: 5px solid black; margin-top: auto; }
         .wb-col { flex: 1; text-align: center; border-right: 5px solid black; display: flex; flex-direction: column; }
         .wb-col:last-child { border-right: none; }
@@ -179,7 +182,7 @@
         </div>
     </div>
 
-    <!-- PRINT MODAL (UPDATED SEPARATE BUTTONS) -->
+    <!-- PRINT MODAL -->
     <div id="printModal" class="custom-modal hidden">
         <div class="modal-box">
             <i class="fas fa-check-circle text-success fa-3x mb-3"></i>
@@ -207,9 +210,9 @@
                 </button>
             </div>
             
-            <!-- STEP 2: SHARE & DOWNLOAD BUTTONS (Lalabas pagkatapos mag-generate) -->
+            <!-- STEP 2: SHARE & DOWNLOAD BUTTONS -->
             <div id="shareContainer" class="hidden">
-                <button class="btn btn-primary w-100 py-3 fw-bold mb-2" onclick="sharePDF()">
+                <button id="shareBtn" class="btn btn-primary w-100 py-3 fw-bold mb-2" onclick="sharePDF()">
                     <i class="fas fa-share-alt me-2"></i> SHARE TO GROZZII
                 </button>
                 <button class="btn btn-outline-dark w-100 py-2 fw-bold mb-2" onclick="downloadPDF()">
@@ -276,9 +279,7 @@
             } catch(e) { alert(e.message); }
         }
 
-        // --- SEPARATED PROCESS TO FIX BROWSER SECURITY BUG ---
-        
-        // STEP 1: GENERATE ONLY
+        // --- STEP 1: GENERATE ONLY ---
         window.generatePDF = async () => {
             const btn = document.getElementById("mainPrintBtn");
             const btnSpan = document.getElementById("genText");
@@ -312,7 +313,7 @@
                 const pdfBlob = pdf.output('blob');
                 readyToShareFile = new File([pdfBlob], "VG_Waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
 
-                // HIDE Generate Button, SHOW Share & Download Buttons
+                // SHOW NEXT BUTTONS
                 document.getElementById('generateContainer').classList.add('hidden');
                 document.getElementById('shareContainer').classList.remove('hidden');
 
@@ -323,35 +324,50 @@
             }
         }
 
-        // STEP 2: SHARE ONLY (Direct User Action = No Error)
+        // --- STEP 2: SHARE ONLY (May Visual Feedback & Error Catching) ---
         window.sharePDF = async () => {
             if (!readyToShareFile) return;
+            
+            const shareBtn = document.getElementById("shareBtn");
+            const originalHTML = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> OPENING SHARE...';
+
             try {
-                if (navigator.canShare && navigator.canShare({ files:[readyToShareFile] })) {
-                    await navigator.share({ 
-                        files: [readyToShareFile],
-                        title: 'VG Freightage Waybill'
-                    });
+                const shareData = {
+                    files: [readyToShareFile],
+                    title: 'VG Waybill PDF',
+                    text: 'Here is the waybill.'
+                };
+
+                // Tinitignan kung papayag ba ang Chrome/Android na mag-share ng file
+                if (navigator.canShare && navigator.canShare(shareData)) {
+                    await navigator.share(shareData);
                 } else {
-                    alert("Hindi suportado ng browser mo ang pag-share. Pindutin ang 'DOWNLOAD PDF' at buksan sa Grozzii manually.");
+                    alert("Hindi pinayagan ng browser mo ang Direct Share. Pakipindot ang 'DOWNLOAD PDF' tapos buksan na lang sa Grozzii.");
                 }
             } catch (err) {
                 if (err.name !== "AbortError") {
-                    console.log("Share cancelled or failed: " + err);
+                    alert("Error sa pag-share: " + err.message + "\nGamitin muna ang DOWNLOAD PDF.");
                 }
+            } finally {
+                shareBtn.innerHTML = originalHTML;
             }
         }
 
-        // STEP 3: MANUAL DOWNLOAD (Fallback)
+        // --- STEP 3: MANUAL DOWNLOAD (Fixed for Mobile Browsers) ---
         window.downloadPDF = () => {
             if (!readyToShareFile) return;
             const link = document.createElement('a');
             link.href = URL.createObjectURL(readyToShareFile);
             link.download = readyToShareFile.name;
+            
+            // Required para gumana ang download button sa ilang Android phones
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
         }
 
-        // RESET UI kapag pinalitan ang settings or sinarado ang modal
+        // RESET UI
         window.resetPrintUI = () => {
             readyToShareFile = null;
             document.getElementById('generateContainer').classList.remove('hidden');
