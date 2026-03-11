@@ -51,19 +51,14 @@
         .wb-header { text-align: center; font-size: 38px; text-transform: uppercase; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 15px; }
         .wb-dest-box { border: 5px solid black; text-align: center; margin: 0 40px 15px 40px; padding: 5px 0; }
         .wb-dest { font-size: 150px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
-
         .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 4px solid black; }
         .wb-num { font-size: 65px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; }
-
         .wb-address-section { flex-grow: 1; font-size: 30px; line-height: 1.4; text-transform: uppercase; margin-bottom: 15px; color: black; }
         .addr-line { margin-bottom: 10px; font-weight: 700; }
         .addr-indent { display: block; padding-left: 60px; font-size: 36px; font-weight: 900; }
-        
         .wb-handling-box { border: 5px solid black; text-align: center; font-size: 85px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 15px; text-transform: uppercase; }
-
         .wb-commodity-section { font-size: 26px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid #aaa; padding-bottom: 10px;}
         .comm-val { font-size: 40px; font-weight: 900; padding-left: 40px; display: block; }
-
         .wb-footer-table { display: flex; border: 5px solid black; margin-top: auto; }
         .wb-col { flex: 1; text-align: center; border-right: 5px solid black; display: flex; flex-direction: column; }
         .wb-col:last-child { border-right: none; }
@@ -311,7 +306,12 @@
                 }
 
                 const pdfBlob = pdf.output('blob');
-                readyToShareFile = new File([pdfBlob], "VG_Waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
+                
+                // IMPORTANT FIX: Added lastModified parameter para maiwasan ang Permission Denied sa Chrome Android
+                readyToShareFile = new File([pdfBlob], "VG_Waybill_" + currentCreatedData.waybill + ".pdf", { 
+                    type: "application/pdf",
+                    lastModified: new Date().getTime()
+                });
 
                 // SHOW NEXT BUTTONS
                 document.getElementById('generateContainer').classList.add('hidden');
@@ -324,7 +324,7 @@
             }
         }
 
-        // --- STEP 2: SHARE ONLY (May Visual Feedback & Error Catching) ---
+        // --- STEP 2: SHARE ONLY WITH FALLBACK ---
         window.sharePDF = async () => {
             if (!readyToShareFile) return;
             
@@ -333,41 +333,41 @@
             shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> OPENING SHARE...';
 
             try {
+                // FIX: Tinanggal ang 'text' at 'title' para iwas conflict. Pure File lang ibabato natin.
                 const shareData = {
-                    files: [readyToShareFile],
-                    title: 'VG Waybill PDF',
-                    text: 'Here is the waybill.'
+                    files: [readyToShareFile]
                 };
 
-                // Tinitignan kung papayag ba ang Chrome/Android na mag-share ng file
                 if (navigator.canShare && navigator.canShare(shareData)) {
                     await navigator.share(shareData);
                 } else {
-                    alert("Hindi pinayagan ng browser mo ang Direct Share. Pakipindot ang 'DOWNLOAD PDF' tapos buksan na lang sa Grozzii.");
+                    // Pilitin pumunta sa catch block
+                    throw new Error("Browser does not support sharing files.");
                 }
             } catch (err) {
                 if (err.name !== "AbortError") {
-                    alert("Error sa pag-share: " + err.message + "\nGamitin muna ang DOWNLOAD PDF.");
+                    // SMART FALLBACK: Kapag nag "Permission Denied", auto-download nalang agad para walang abala.
+                    console.log("Share failed via API. Auto-triggering download. Error:", err);
+                    window.downloadPDF();
+                    
+                    alert("Awtomatikong nai-download ang PDF dahil nakaharang ang Share Security ng browser mo. \n\nHanapin ito sa 'Downloads' o sa iyong notifications at i-open sa Grozzii.");
                 }
             } finally {
                 shareBtn.innerHTML = originalHTML;
             }
         }
 
-        // --- STEP 3: MANUAL DOWNLOAD (Fixed for Mobile Browsers) ---
+        // --- STEP 3: MANUAL DOWNLOAD ---
         window.downloadPDF = () => {
             if (!readyToShareFile) return;
             const link = document.createElement('a');
             link.href = URL.createObjectURL(readyToShareFile);
             link.download = readyToShareFile.name;
-            
-            // Required para gumana ang download button sa ilang Android phones
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // RESET UI
         window.resetPrintUI = () => {
             readyToShareFile = null;
             document.getElementById('generateContainer').classList.remove('hidden');
@@ -438,7 +438,6 @@
             }
         }
 
-        // Base Functions
         function startCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }); html5QrcodeScanner.render(onScanSuccess, ()=>{}); }
         function stopCamera() { if(html5QrcodeScanner) html5QrcodeScanner.clear(); }
         function onScanSuccess(wb) { html5QrcodeScanner.clear(); document.getElementById('reader').classList.add('hidden'); document.getElementById('scanForm').classList.remove('hidden'); document.getElementById('detectedWB').innerText = wb; }
