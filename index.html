@@ -36,51 +36,51 @@
         .hidden { display: none !important; }
         .btn-xl { width: 100%; padding: 15px; font-weight: 800; border-radius: 10px; font-size: 1.1rem; }
 
-        /* --- NEW EXACT WAYBILL DESIGN (FLEXBOX PARA HINDI BUMANAT) --- */
-        #printArea { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0; width: 800px; background: white; } 
+        /* --- EXACT WAYBILL DESIGN PARA SA TP870PLUS (HIGH RESOLUTION) --- */
+        #printArea { position: fixed; top: 0; left: -9999px; width: 800px; background: white; z-index: -1; } 
 
         .sticker-page { 
             width: 800px;
-            padding: 20px 30px;
+            /* Inalis ang padding sa labas para sumagad sa edge ng PDF */
+            padding: 10px 25px 25px 25px;
             background: white; color: black;
             font-family: 'Arial', sans-serif; 
             border: 4px solid black;
             box-sizing: border-box;
             display: flex; flex-direction: column;
-            /* Ang height ay dynamic sa JS para hindi banat ang text */
+            justify-content: space-between;
         }
 
         /* 1. Header */
-        .wb-header { text-align: center; font-size: 32px; text-transform: uppercase; font-weight: bold; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 3px solid black; padding-bottom: 5px; margin-bottom: 15px; }
+        .wb-header { text-align: center; font-size: 38px; text-transform: uppercase; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 2px; border-bottom: 4px solid black; padding-bottom: 10px; margin-bottom: 15px; }
         
         /* 2. Destination Box */
-        .wb-dest-box { border: 4px solid black; text-align: center; margin: 0 50px 15px 50px; padding: 5px 0; }
-        .wb-dest { font-size: 140px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
+        .wb-dest-box { border: 5px solid black; text-align: center; margin: 0 40px 15px 40px; padding: 5px 0; }
+        .wb-dest { font-size: 150px; font-weight: 900; font-family: 'Oswald', sans-serif; line-height: 1; letter-spacing: 5px; }
 
         /* 3. QR & Waybill Num */
-        .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 3px solid black; }
-        .wb-num { font-size: 60px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; }
+        .wb-qr-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 4px solid black; }
+        .wb-num { font-size: 65px; font-weight: 900; font-family: 'Oswald', sans-serif; text-align: right; letter-spacing: 2px; }
 
-        /* 4. Address Section */
-        .wb-address-section { flex-grow: 1; font-size: 28px; line-height: 1.4; text-transform: uppercase; margin-bottom: 15px; }
-        .addr-line { margin-bottom: 8px; }
-        .addr-indent { display: block; padding-left: 60px; font-size: 32px; font-weight: bold; }
+        /* 4. Address Section - MAS PINALAKI PARA KLARO SA 203DPI */
+        .wb-address-section { flex-grow: 1; font-size: 30px; line-height: 1.4; text-transform: uppercase; margin-bottom: 15px; color: black; }
+        .addr-line { margin-bottom: 10px; font-weight: 700; }
+        .addr-indent { display: block; padding-left: 60px; font-size: 36px; font-weight: 900; }
         
         /* 5. Warning Box (Handling) */
-        .wb-handling-box { border: 4px solid black; text-align: center; font-size: 80px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 15px; text-transform: uppercase; }
+        .wb-handling-box { border: 5px solid black; text-align: center; font-size: 85px; font-weight: 900; font-family: 'Oswald', sans-serif; letter-spacing: 4px; padding: 5px; margin-bottom: 15px; text-transform: uppercase; }
 
         /* 6. Commodity */
-        .wb-commodity-section { font-size: 24px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; }
-        .comm-val { font-size: 35px; font-weight: 900; padding-left: 40px; display: block; }
+        .wb-commodity-section { font-size: 26px; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; border-bottom: 2px solid #aaa; padding-bottom: 10px;}
+        .comm-val { font-size: 40px; font-weight: 900; padding-left: 40px; display: block; }
 
         /* 7. Footer Table */
-        .wb-footer-table { display: flex; border: 4px solid black; margin-top: auto; }
-        .wb-col { flex: 1; text-align: center; border-right: 4px solid black; display: flex; flex-direction: column; }
+        .wb-footer-table { display: flex; border: 5px solid black; margin-top: auto; }
+        .wb-col { flex: 1; text-align: center; border-right: 5px solid black; display: flex; flex-direction: column; }
         .wb-col:last-child { border-right: none; }
-        .col-head { border-bottom: 4px solid black; font-size: 20px; font-weight: bold; padding: 5px; text-transform: uppercase; }
-        .col-body { font-size: 45px; font-weight: 900; padding: 10px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+        .col-head { border-bottom: 5px solid black; font-size: 22px; font-weight: 900; padding: 5px; text-transform: uppercase; }
+        .col-body { font-size: 55px; font-weight: 900; padding: 10px 5px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
 
-        /* Modals */
         .custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
     </style>
@@ -103,7 +103,7 @@
             <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- CREATE TAB (UPDATED FIELDS) -->
+        <!-- CREATE TAB -->
         <div id="tab-create" class="tab-pane">
             <div class="app-card">
                 <h5 class="fw-bold text-primary mb-3">Create Waybill</h5>
@@ -121,7 +121,7 @@
 
                 <div class="row g-2 mb-2">
                     <div class="col-7"><label class="form-label">Consignee Name</label><input type="text" id="consigneeName" class="form-control" placeholder="JASAC PHARMA"></div>
-                    <div class="col-5"><label class="form-label">Dest. City/Hub</label><input type="text" id="consigneeAddr" class="form-control" placeholder="CEBU BL"></div>
+                    <div class="col-5"><label class="form-label">Dest. City/Hub</label><input type="text" id="consigneeAddr" class="form-control" placeholder="ILOILO"></div>
                 </div>
 
                 <div class="row g-2 mb-2">
@@ -206,7 +206,7 @@
                     <option value="150">100 x 150 mm (Standard)</option>
                     <option value="135">100 x 135 mm (Shopee)</option>
                 </select>
-                <label class="form-label d-block text-start">Copies:</label>
+                <label class="form-label d-block text-start">Copies (From/To):</label>
                 <div class="d-flex align-items-center gap-2">
                     <input type="number" id="pmStart" class="form-control text-center fw-bold" value="1">
                     <span>to</span>
@@ -273,40 +273,57 @@
             } catch(e) { alert(e.message); }
         }
 
-        window.executePrint = () => {
+        // --- UPDATED ASYNC PRINT LOGIC PARA SA MULTI-PAGE PDF & HIGH-DEF ---
+        window.executePrint = async () => {
             const start = parseInt(document.getElementById('pmStart').value);
             const end = parseInt(document.getElementById('pmEnd').value);
             const size = document.getElementById('paperSize').value;
             
+            // Generate all pages sa HTML muna
             generateStickers(currentCreatedData, start, end, size);
             
             const btnText = document.querySelector("#printModal button");
             const oldText = btnText.innerText;
-            btnText.innerText = "Generating...";
+            
+            try {
+                // Hahanapin niya LAHAT ng na-generate na pages (hal. 1/2 at 2/2)
+                const pages = document.querySelectorAll('.sticker-page');
+                if(pages.length === 0) return;
 
-            setTimeout(() => {
-                const elementToPrint = document.querySelector('.sticker-page');
-                if(!elementToPrint) return;
+                const { jsPDF } = window.jspdf;
+                const pdfHeight = (size === '150') ? 150 : 135;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [100, pdfHeight] });
 
-                html2canvas(elementToPrint, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const { jsPDF } = window.jspdf;
+                // I-loop natin para makuhanan ng picture ang bawat page at idagdag sa iisang PDF
+                for (let i = 0; i < pages.length; i++) {
+                    btnText.innerText = `Processing Page ${i + 1}/${pages.length}...`;
                     
-                    const pdfHeight = (size === '150') ? 150 : 135;
-                    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [100, pdfHeight] });
-
+                    // scale: 3 para sobrang linaw ng text bago ipasa sa printer
+                    const canvas = await html2canvas(pages[i], { scale: 3, backgroundColor: "#ffffff" });
+                    const imgData = canvas.toDataURL('image/png', 1.0);
+                    
+                    if (i > 0) pdf.addPage(); // Gumawa ng new page sa PDF para sa 2/2, 3/3...
+                    
+                    // Ilapat ang image sumakto sa 100mm lapad
                     pdf.addImage(imgData, 'PNG', 0, 0, 100, pdfHeight);
-                    const pdfBlob = pdf.output('blob');
-                    const file = new File([pdfBlob], "waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
+                }
 
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        navigator.share({ files: [file], title: 'Print Waybill' }).catch(console.error);
-                    } else {
-                        pdf.save("waybill_" + currentCreatedData.waybill + ".pdf");
-                    }
-                    btnText.innerText = oldText;
-                });
-            }, 500);
+                btnText.innerText = "Opening Grozzii...";
+
+                const pdfBlob = pdf.output('blob');
+                const file = new File([pdfBlob], "waybill_" + currentCreatedData.waybill + ".pdf", { type: "application/pdf" });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: 'Print Waybill' });
+                } else {
+                    pdf.save("waybill_" + currentCreatedData.waybill + ".pdf");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error: " + err);
+            }
+            
+            btnText.innerText = oldText; // Ibalik sa dati ang button text
         }
 
         window.closePrintModal = () => { document.getElementById('printModal').classList.add('hidden'); document.getElementById('consigneeName').value = ""; document.getElementById('consigneeAddr').value = ""; document.getElementById('weight').value = ""; document.getElementById('custCode').value = ""; document.getElementById('commodity').value = ""; generateRandomWB(); }
@@ -325,12 +342,11 @@
             else if(addr.includes("GENSAN") || addr.includes("GES")) dCode="GES";
             else if(addr.includes("ROXAS") || addr.includes("ROX")) dCode="ROX";
 
-            // Fallbacks for older data records
             const handling = data.details.handling || "GEN CARGO"; 
             const commodity = data.details.commodity || "GEN CARGO";
             const custCodeStr = data.details.custCode ? ` [${data.details.custCode}]` : "";
 
-            // Aspect ratio set via JS
+            // Dynamic height para di bumanat. 150mm = 1200px, 135mm = 1080px (800px width based)
             const heightPx = (size === '150') ? '1200px' : '1080px';
 
             for(let i=start; i<=end; i++) {
